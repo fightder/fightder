@@ -1,5 +1,5 @@
 {
-  "name": "fync-app-2",
+  "name": "fightder",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -16,7 +16,7 @@
     "@types/react": "^18.2.48",
     "axios": "^1.6.5",
     "expo": "^49.0.21",
-    "expo-apple-authentication": "~6.1.2",
+    "expo-apple-authentication": "~6.1.0",
     "expo-blur": "~12.4.1",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.12",
