@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useStorageState } from "../hooks/useStorageState";
 import { Linking } from "react-native";
 import endpoints from "constants/endpoints";
@@ -63,6 +63,9 @@ function exchangeCodeForToken(authorizationCode) {
 export function SessionProvider(props: React.PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
 
+  useEffect(() => {
+    setSession("hi");
+  }, []);
   return (
     <AuthContext.Provider
       value={{

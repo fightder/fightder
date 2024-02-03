@@ -8,6 +8,14 @@ import {
   SpaceGrotesk_600SemiBold,
   SpaceGrotesk_700Bold,
 } from "@expo-google-fonts/space-grotesk";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+  onlineManager,
+} from "@tanstack/react-query";
 
 import * as outfit from "@expo-google-fonts/outfit";
 const {
@@ -16,7 +24,13 @@ const {
   ...Outfits
 } = outfit;
 import { useCallback } from "react";
+// import NetInfo from "@react-native-community/netinfo";
 
+// onlineManager.setEventListener((setOnline) => {
+//   return NetInfo.addEventListener((state) => {
+//     setOnline(!!state.isConnected);
+//   });
+// });
 // SplashScreen.preventAutoHideAsync();
 
 console.log("this running");
@@ -31,6 +45,7 @@ export default function Root() {
   });
 
   let [outfitLoaded] = useOutfitFonts(Outfits);
+  const queryClient = new QueryClient();
 
   const onLayoutRootView = useCallback(async () => {
     if (outfitLoaded) {
@@ -44,8 +59,10 @@ export default function Root() {
   }
 
   return (
-    <SessionProvider>
-      <Slot />
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <Slot />
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }

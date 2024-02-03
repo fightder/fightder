@@ -1975,6 +1975,11 @@
     prompts "^2.4.0"
     semver "^7.5.2"
 
+"@react-native-community/netinfo@9.3.10":
+  version "9.3.10"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-9.3.10.tgz#9b6cc2aec9329b5ccf35e866094c43aa420d927a"
+  integrity sha512-OwnqoJUp/4sa9e3ju+wQavAa8l0fiA3DheeLMKzKxtKeAe0CA7bNxWRM752JvRQ6A/igPnt1V0zSlu5owvQEuA==
+
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.72.0.tgz"
@@ -2185,6 +2190,18 @@
     "@supabase/postgrest-js" "^1.9.0"
     "@supabase/realtime-js" "^2.9.3"
     "@supabase/storage-js" "^2.5.4"
+
+"@tanstack/query-core@5.18.1":
+  version "5.18.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.18.1.tgz#b653ee354b7f4712d53565ccc5c6d8fb83ec866c"
+  integrity sha512-fYhrG7bHgSNbnkIJF2R4VUXb4lF7EBiQjKkDc5wOlB7usdQOIN4LxxHpDxyE3qjqIst1WBGvDtL48T0sHJGKCw==
+
+"@tanstack/react-query@^5.18.1":
+  version "5.18.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.18.1.tgz#fd4e7b87260e82c5277355ad64f0e431a9302e02"
+  integrity sha512-PdI07BbsahZ+04PxSuDQsQvBWe008eWFk/YYWzt8fvzt2sALUM0TpAJa/DFpqa7+SSo7j1EQR6Jx6znXNHyaXw==
+  dependencies:
+    "@tanstack/query-core" "5.18.1"
 
 "@types/hammerjs@^2.0.36":
   version "2.0.45"
@@ -6168,7 +6185,7 @@ react-is@^17.0.1:
 
 react-native-deck-swiper@^2.0.16:
   version "2.0.16"
-  resolved "https://registry.npmjs.org/react-native-deck-swiper/-/react-native-deck-swiper-2.0.16.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-deck-swiper/-/react-native-deck-swiper-2.0.16.tgz#74e385564ff1fb75fdacd1d34bf3b7b0e8baedf4"
   integrity sha512-uXUe0uua6B6hwMzyB7Q34bebhAgrw2EqF6z2uNoxlT1HJ6igy6eXUR34ON48BYXP+yPFFBdBE5R7nCuBezUhrQ==
   dependencies:
     prop-types "15.5.10"
