@@ -1,7 +1,11 @@
 import axios from "axios";
 
 export const getOpponents = async () => {
-  const res = await axios.get("https://api.opendota.com/api/teams");
+  const res = await axios.get("https://api.opendota.com/api/teams", {
+    params: {
+      limit: 50, // Set the limit to the number of rows you want
+    },
+  });
   return res.data;
 };
 

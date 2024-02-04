@@ -63,9 +63,10 @@ const Home = () => {
           {/* <IconButton name="add" href="/add-friend" /> */}
         </View>
       </View>
-      <View flex>
+      <View flex style={{ top: -20, zIndex: 200 }}>
         {status == "success" ? (
           <Swiper
+            disableBottomSwipe
             containerStyle={{}}
             cards={status == "success" ? data : []}
             renderCard={(card) => {
@@ -152,10 +153,6 @@ const Home = () => {
         ) : (
           <ActivityIndicator />
         )}
-
-        <Button onPress={() => {}}>
-          <Text>Swipe Back</Text>
-        </Button>
       </View>
       <SafeBottom />
     </View>

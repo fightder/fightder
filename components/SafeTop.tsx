@@ -52,6 +52,7 @@ export function SafeTop({
       {title && (
         <Text
           // style={{ top: insets.top, left: 60, overflow: "visible" }}
+          style={{ left: 20 }}
           variant="header"
         >
           {title}
