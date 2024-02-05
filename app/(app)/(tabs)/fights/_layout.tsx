@@ -38,10 +38,8 @@ export default function FightLayout() {
           tabBarLabelStyle: {
             color: COLORS.background[50],
             fontWeight: "bold",
-
             fontSize: 17,
           },
-
           tabBarActiveTintColor: COLORS.primary[900],
           tabBarInactiveTintColor:
             COLORS.background[mode == "dark" ? 300 : 900],

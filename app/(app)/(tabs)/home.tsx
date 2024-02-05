@@ -8,38 +8,31 @@ import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Text } from "components/Text";
 import { View } from "components/View";
 import { IconButton } from "components/IconButton";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator, Modal, StyleSheet } from "react-native";
 import { Button } from "components/Button";
 import Swiper from "react-native-deck-swiper";
-import { SwipeCard } from "components/SwipeCard";
+import { Opp, SwipeCard } from "components/SwipeCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getOpponents } from "utils/api";
+import OppModal from "components/oppModal";
 
 const Home = () => {
   const [opps, setOpps] = React.useState([]);
   const [filter, setFilter] = React.useState("all");
-  // function fetchTodoList({ queryKey }) {
-  //   const [_key, { status, page }] = queryKey
-  //   return new Promise()
-  // }
+  const [expanded, setExpanded] = React.useState<Opp | null>(null);
   const { status, data, error } = useQuery({
     queryKey: ["opponents", filter],
     queryFn: getOpponents,
   });
 
-  // Mutations
-  // const mutation = useMutation({
-  //   mutationFn: postTodo,
-  //   onSuccess: () => {
-  //     // Invalidate and refetch
-  //     queryClient.invalidateQueries({ queryKey: ["todos"] });
-  //   },
-  // });
   const width = 256;
   const height = 256;
   const r = width * 0.33;
   return (
     <View bg={1} style={{ flex: 1 }}>
+      {!!expanded && (
+        <OppModal opp={expanded} dismiss={() => setExpanded(null)} />
+      )}
       <SafeTop />
       <View
         row
@@ -67,15 +60,13 @@ const Home = () => {
         {status == "success" ? (
           <Swiper
             disableBottomSwipe
-            containerStyle={{}}
+            containerStyle={{
+              padding: 0,
+              margin: 0,
+            }}
             cards={status == "success" ? data : []}
-            renderCard={(card) => {
-              return <SwipeCard data={card} />;
-              return (
-                <View flex bg={3} r={20}>
-                  <Text variant="header">{card}</Text>
-                </View>
-              );
+            renderCard={(card: Opp) => {
+              return <SwipeCard data={card} expand={() => setExpanded(card)} />;
             }}
             animateOverlayLabelsOpacity
             animateCardOpacity
@@ -92,6 +83,8 @@ const Home = () => {
             onSwipedRight={(cardIndex) => {
               console.log(cardIndex, "onSwipedRight");
             }}
+            overlayOpacityHorizontalThreshold={0.1}
+            overlayOpacityVerticalThreshold={0.1}
             overlayLabels={{
               left: {
                 title: "NOPE",

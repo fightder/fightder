@@ -2,20 +2,25 @@ import React from "react";
 import { User } from "constants/type";
 import { View } from "./View";
 import { Text } from "./Text";
-import { Image } from "react-native";
+import {
+  FlatList,
+  Image,
+  ImageSourcePropType,
+  Modal,
+  useWindowDimensions,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { IconButton } from "./IconButton";
+import OppModal from "./oppModal";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import Carousel from "react-native-reanimated-carousel";
 
-// {
-//   "team_id": 8597976,
-//   "rating": 1383.46,
-//   "wins": 254,
-//   "losses": 176,
-//   "last_match_time": 1706958485,
-//   "name": "Talon",
-//   "tag": "TLN",
-//   "logo_url": "https://steamusercontent-a.akamaihd.net/ugc/2028347991408203552/8DC9872DA88071D728A914CE17279959423FA340/"
-//   },
-
-type Opp = {
+export type Opp = {
   team_id: number;
   rating: number;
   wins: number;
@@ -25,8 +30,32 @@ type Opp = {
   tag: string;
   logo_url: string;
 };
-export const SwipeCard = ({ data: opp }: { data: Opp }) => {
+
+export const SwipeCard = ({
+  data: opp,
+  expand,
+}: {
+  data: Opp;
+  expand: () => void;
+}) => {
+  const PAGE_WIDTH = useWindowDimensions().width;
   console.log(opp);
+  const pressAnim = useSharedValue<number>(0);
+  const animationStyle = React.useCallback((value: number) => {
+    "worklet";
+
+    const zIndex = interpolate(value, [-1, 0, 1], [-1000, 0, 1000]);
+    const translateX = interpolate(
+      value,
+      [-1, 0, 1],
+      [-PAGE_WIDTH, 0, PAGE_WIDTH]
+    );
+
+    return {
+      transform: [{ translateX }],
+      zIndex,
+    };
+  }, []);
   if (!opp) {
     return <View />;
   }
@@ -38,33 +67,75 @@ export const SwipeCard = ({ data: opp }: { data: Opp }) => {
       bg={3}
       style={{ maxHeight: "80%", overflow: "hidden" }}
     >
-      <Image
-        source={{ uri: opp.logo_url }}
+      <LinearGradient
+        colors={["#00000000", "#000555"]}
+        style={{ flex: 1, width: "100%", height: "100%", borderRadius: 30 }}
+      >
+        <Carousel
+          width={PAGE_WIDTH}
+          data={[opp.logo_url, opp.logo_url, opp.logo_url]}
+          autoPlay={true}
+          onScrollBegin={() => {
+            pressAnim.value = withTiming(1);
+          }}
+          onScrollEnd={() => {
+            pressAnim.value = withTiming(0);
+          }}
+          renderItem={({ index, item }) => {
+            return (
+              <CustomItem
+                source={{ uri: item }}
+                key={index}
+                pressAnim={pressAnim}
+              />
+            );
+          }}
+          customAnimation={animationStyle}
+          scrollAnimationDuration={1200}
+        />
+
+        <View style={{ position: "absolute", bottom: 0 }} flex p={5} row m={10}>
+          <View p={10}>
+            <Text variant="title">{opp.name}</Text>
+            <Text variant="body" style={{ textAlign: "center" }}>
+              {opp.tag}
+              {opp.rating}
+              {opp.wins}
+              {opp.losses}
+              {opp.last_match_time}
+              {opp.team_id}
+            </Text>
+          </View>
+          <IconButton size={30} name="eye" onPress={expand} />
+        </View>
+      </LinearGradient>
+    </View>
+  );
+};
+
+interface ItemProps {
+  pressAnim: Animated.SharedValue<number>;
+  source: ImageSourcePropType;
+}
+
+const CustomItem: React.FC<ItemProps> = ({ pressAnim, source }) => {
+  const animStyle = useAnimatedStyle(() => {
+    const scale = interpolate(pressAnim.value, [0, 1], [1, 0.9]);
+    const borderRadius = interpolate(pressAnim.value, [0, 1], [0, 30]);
+
+    return {
+      transform: [{ scale }],
+      borderRadius,
+    };
+  }, []);
+
+  return (
+    <Animated.View style={[{ flex: 1, overflow: "hidden" }, animStyle]}>
+      <Animated.Image
+        source={source}
+        resizeMode="cover"
         style={{ width: "100%", height: "80%" }}
       />
-      <View flex>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.name}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.tag}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.rating}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.wins}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.losses}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.last_match_time}
-        </Text>
-        <Text variant="header" style={{ textAlign: "center" }}>
-          {opp.team_id}
-        </Text>
-      </View>
-    </View>
+    </Animated.View>
   );
 };
