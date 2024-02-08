@@ -2,6 +2,7 @@ import {
   ImageSourcePropType,
   Modal,
   Pressable,
+  ScrollView,
   useWindowDimensions,
 } from "react-native";
 import React, { ComponentProps } from "react";
@@ -20,14 +21,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
-const colors = [
-  "#26292E",
-  "#899F9C",
-  "#B3C680",
-  "#5C6265",
-  "#F5D399",
-  "#F1F1F1",
-];
+import { windowSize } from "constants/size";
+
 const OppModal = ({
   opp,
   dismiss,
@@ -39,6 +34,7 @@ const OppModal = ({
   const pressAnim = useSharedValue<number>(0);
   const PAGE_WIDTH = useWindowDimensions().width;
   const progressValue = useSharedValue<number>(0);
+  const pages = [opp.logo_url, opp.logo_url, opp.logo_url];
 
   const carouselRef = React.useRef<ICarouselInstance>();
   console.log(opp, "opp\n\n");
@@ -48,90 +44,92 @@ const OppModal = ({
         intensity={100}
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <SafeTop />
-        <View
-          flex
-          bg={3}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {!!progressValue && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: 100,
-                alignSelf: "center",
+        <ScrollView>
+          <SafeTop />
+          <View
+            flex
+            bg={3}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {!!progressValue && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  // width: 100,
+                  // alignSelf: "center",
+                  marginTop: 20,
+                }}
+              >
+                {pages.map((_, index) => {
+                  return (
+                    <PaginationItem
+                      animValue={progressValue}
+                      index={index}
+                      key={index}
+                      length={pages.length}
+                    />
+                  );
+                })}
+              </View>
+            )}
+            <Carousel
+              width={PAGE_WIDTH}
+              style={{ flex: 1 }}
+              data={pages}
+              onScrollBegin={() => {
+                pressAnim.value = withTiming(1);
               }}
-            >
-              {colors.map((backgroundColor, index) => {
+              onScrollEnd={() => {
+                pressAnim.value = withTiming(0);
+              }}
+              ref={carouselRef}
+              renderItem={({ index, item }) => {
+                // return <Text>sddf</Text>;
                 return (
-                  <PaginationItem
-                    backgroundColor={backgroundColor}
-                    animValue={progressValue}
-                    index={index}
-                    key={index}
-                    length={colors.length}
-                  />
+                  <>
+                    <Pressable
+                      style={{
+                        position: "absolute",
+                        width: "50%",
+                        height: "100%",
+                        // backgroundColor: "red",
+                        zIndex: 1000,
+                      }}
+                      onPress={() => {
+                        console.log("pressable");
+                        carouselRef?.current.prev();
+                      }}
+                    />
+                    <Pressable
+                      style={{
+                        position: "absolute",
+                        width: "50%",
+                        height: "100%",
+                        marginLeft: "50%",
+                        // backgroundColor: "red",
+                        zIndex: 1000,
+                      }}
+                      onPress={() => {
+                        console.log("pressable");
+                        carouselRef?.current.next();
+                      }}
+                    />
+                    <CustomItem
+                      source={{ uri: item }}
+                      key={index}
+                      pressAnim={pressAnim}
+                    />
+                  </>
                 );
-              })}
-            </View>
-          )}
-          <Carousel
-            width={PAGE_WIDTH}
-            style={{ flex: 1 }}
-            data={[opp.logo_url, opp.logo_url, opp.logo_url]}
-            onScrollBegin={() => {
-              pressAnim.value = withTiming(1);
-            }}
-            onScrollEnd={() => {
-              pressAnim.value = withTiming(0);
-            }}
-            ref={carouselRef}
-            renderItem={({ index, item }) => {
-              // return <Text>sddf</Text>;
-              return (
-                <>
-                  <Pressable
-                    style={{
-                      position: "absolute",
-                      width: "50%",
-                      height: "100%",
-                      // backgroundColor: "red",
-                      zIndex: 1000,
-                    }}
-                    onPress={() => {
-                      console.log("pressable");
-                      carouselRef?.current.prev();
-                    }}
-                  />
-                  <Pressable
-                    style={{
-                      position: "absolute",
-                      width: "50%",
-                      height: "100%",
-                      marginLeft: "50%",
-                      // backgroundColor: "red",
-                      zIndex: 1000,
-                    }}
-                    onPress={() => {
-                      console.log("pressable");
-                      carouselRef?.current.next();
-                    }}
-                  />
-                  <CustomItem
-                    source={{ uri: item }}
-                    key={index}
-                    pressAnim={pressAnim}
-                  />
-                </>
-              );
-            }}
-          />
-          <IconButton name="close" onPress={dismiss} />
-        </View>
+              }}
+            />
+            <IconButton name="close" onPress={dismiss} />
+          </View>
+        </ScrollView>
       </BlurView>
     </Modal>
   );
@@ -168,15 +166,15 @@ const CustomItem: React.FC<ItemProps> = ({ pressAnim, source }) => {
 
 const PaginationItem: React.FC<{
   index: number;
-  backgroundColor: string;
   length: number;
   animValue: Animated.SharedValue<number>;
   isRotate?: boolean;
 }> = (props) => {
-  const { animValue, index, length, backgroundColor, isRotate } = props;
-  const width = 10;
+  const { animValue, index, length, isRotate } = props;
+  const width = windowSize.width / length - 10;
 
   const animStyle = useAnimatedStyle(() => {
+    console.log(animValue?.value, "animValue?.value");
     let inputRange = [index - 1, index, index + 1];
     let outputRange = [-width, 0, width];
 
@@ -198,12 +196,14 @@ const PaginationItem: React.FC<{
       ],
     };
   }, [animValue, index, length]);
+
   return (
     <View
       style={{
         backgroundColor: "white",
         width,
-        height: width,
+        height: 5,
+        marginHorizontal: 5,
         borderRadius: 50,
         overflow: "hidden",
         transform: [
@@ -217,7 +217,7 @@ const PaginationItem: React.FC<{
         style={[
           {
             borderRadius: 50,
-            backgroundColor,
+            backgroundColor: "red",
             flex: 1,
           },
           animStyle,
