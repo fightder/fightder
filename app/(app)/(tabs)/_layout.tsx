@@ -67,24 +67,24 @@ export default function AppLayout() {
         initialRouteName="home"
       >
         <Tabs.Screen
-          // Name of the route to hide.
-
           name="home"
           options={{
             tabBarIcon: TabBarIcon("home"),
           }}
         />
         <Tabs.Screen
-          // Name of the route to hide.
-
           name="fights"
           options={{
             tabBarIcon: TabBarIcon("trophy"),
           }}
         />
-
         <Tabs.Screen
-          // Name of the route to hide.
+          name="chat"
+          options={{
+            tabBarIcon: TabBarIcon("chat"),
+          }}
+        />
+        <Tabs.Screen
           name="profile"
           options={{
             tabBarIcon: TabBarIcon("user"),
@@ -96,7 +96,7 @@ export default function AppLayout() {
 }
 
 const TabBarIcon =
-  (name: "apps" | "compass" | "home" | "user" | "trophy") =>
+  (name: "apps" | "compass" | "home" | "user" | "trophy" | "chat") =>
   ({
     focused,
     color,
@@ -105,15 +105,14 @@ const TabBarIcon =
     focused: boolean;
     color: string;
     size: number;
-  }) =>
-    (
-      <SvgXml
-        xml={icons[focused ? name : (`${name}-outline` as keyof typeof icons)]}
-        width={30}
-        height={30}
-        fill={color}
-      />
-    );
+  }) => (
+    <SvgXml
+      xml={icons[focused ? name : (`${name}-outline` as keyof typeof icons)]}
+      width={30}
+      height={30}
+      fill={color}
+    />
+  );
 
 const icons = {
   apps: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M6.75 2.5A4.25 4.25 0 0 1 11 6.75V11H6.75a4.25 4.25 0 1 1 0-8.5zm0 10.5H11v4.25A4.25 4.25 0 1 1 6.75 13zm10.5-10.5a4.25 4.25 0 1 1 0 8.5H13V6.75a4.25 4.25 0 0 1 4.25-4.25zM13 13h4.25A4.25 4.25 0 1 1 13 17.25V13z"/></svg>`,
@@ -122,6 +121,8 @@ const icons = {
   home: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <g> <path fill="none" d="M0 0h24v24H0z"/> <path d="M20 20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9H1l10.327-9.388a1 1 0 0 1 1.346 0L23 11h-3v9z"/> </g> </svg>`,
   "home-outline": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g> <path fill="none" d="M0 0h24v24H0z"/><path d="M19 21H5a1 1 0 0 1-1-1v-9H1l10.327-9.388a1 1 0 0 1 1.346 0L23 11h-3v9a1 1 0 0 1-1 1zM6 19h12V9.157l-6-5.454-6 5.454V19z"/> </g> </svg>`,
 
+  chat: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3H14C18.4183 3 22 6.58172 22 11C22 15.4183 18.4183 19 14 19V22.5C9 20.5 2 17.5 2 11C2 6.58172 5.58172 3 10 3Z"></path></svg>`,
+  "chat-outline": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3H14C18.4183 3 22 6.58172 22 11C22 15.4183 18.4183 19 14 19V22.5C9 20.5 2 17.5 2 11C2 6.58172 5.58172 3 10 3ZM12 17H14C17.3137 17 20 14.3137 20 11C20 7.68629 17.3137 5 14 5H10C6.68629 5 4 7.68629 4 11C4 14.61 6.46208 16.9656 12 19.4798V17Z"></path></svg>`,
   "compass-outline": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <g> <path fill="none" d="M0 0h24v24H0z"/> <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.5-11.5l-2 5-5 2 2-5 5-2z"/> </g> </svg> `,
   compass: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <g> <path fill="none" d="M0 0h24v24H0z"/> <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm3.5-13.5l-5 2-2 5 5-2 2-5z"/> </g> </svg> `,
 
