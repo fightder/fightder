@@ -30,16 +30,7 @@ const Fights = () => {
               "https://images.unsplash.com/photo-1631583525743-1f3c1f5e6f1e",
           },
         ]}
-        renderItem={({ item }) => (
-          <FightCard
-            fight={item}
-            // title="Fight Night"
-            // description="Fight Night is a weekly event where we all get together and fight"
-            // date="2022-01-01"
-            // location="New York, NY"
-            // image="https://images.unsplash.com/photo-1631583525743-1f3c1f5e6f1e"
-          />
-        )}
+        renderItem={({ item }) => <FightCard fight={item} />}
       />
     </View>
   );

@@ -28,13 +28,9 @@ const Fights = () => {
         }}
       >
         {/* <IconButton name="menu" /> */}
-        <Text variant="header" style={{ textAlign: "center" }}>
-          Fights
+        <Text variant="title" style={{ textAlign: "center" }}>
+          No Fights Nearby
         </Text>
-
-        <View row gap={30}>
-          <IconButton name="add" href="/create-event" />
-        </View>
       </View>
     </View>
   );

@@ -2,7 +2,6 @@ import {
   ImageSourcePropType,
   Modal,
   Pressable,
-  ScrollView,
   useWindowDimensions,
 } from "react-native";
 import React, { ComponentProps } from "react";
@@ -22,6 +21,8 @@ import Animated, {
 } from "react-native-reanimated";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { windowSize } from "constants/size";
+import ImageGallery from "./ImageGallery";
+import { ScrollView } from "react-native-gesture-handler";
 
 const OppModal = ({
   opp,
@@ -40,96 +41,10 @@ const OppModal = ({
   console.log(opp, "opp\n\n");
   return (
     <Modal animationType="fade" transparent={true} {...props}>
-      <BlurView
-        intensity={100}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
-        <ScrollView>
-          <SafeTop />
-          <View
-            flex
-            bg={3}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {!!progressValue && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  // width: 100,
-                  // alignSelf: "center",
-                  marginTop: 20,
-                }}
-              >
-                {pages.map((_, index) => {
-                  return (
-                    <PaginationItem
-                      animValue={progressValue}
-                      index={index}
-                      key={index}
-                      length={pages.length}
-                    />
-                  );
-                })}
-              </View>
-            )}
-            <Carousel
-              width={PAGE_WIDTH}
-              style={{ flex: 1 }}
-              data={pages}
-              onScrollBegin={() => {
-                pressAnim.value = withTiming(1);
-              }}
-              onScrollEnd={() => {
-                pressAnim.value = withTiming(0);
-              }}
-              ref={carouselRef}
-              renderItem={({ index, item }) => {
-                // return <Text>sddf</Text>;
-                return (
-                  <>
-                    <Pressable
-                      style={{
-                        position: "absolute",
-                        width: "50%",
-                        height: "100%",
-                        // backgroundColor: "red",
-                        zIndex: 1000,
-                      }}
-                      onPress={() => {
-                        console.log("pressable");
-                        carouselRef?.current.prev();
-                      }}
-                    />
-                    <Pressable
-                      style={{
-                        position: "absolute",
-                        width: "50%",
-                        height: "100%",
-                        marginLeft: "50%",
-                        // backgroundColor: "red",
-                        zIndex: 1000,
-                      }}
-                      onPress={() => {
-                        console.log("pressable");
-                        carouselRef?.current.next();
-                      }}
-                    />
-                    <CustomItem
-                      source={{ uri: item }}
-                      key={index}
-                      pressAnim={pressAnim}
-                    />
-                  </>
-                );
-              }}
-            />
-            <IconButton name="close" onPress={dismiss} />
-          </View>
-        </ScrollView>
+      <BlurView intensity={100} style={{ flex: 1 }}>
+        <SafeTop />
+        <ImageGallery images={pages} />
+        <IconButton name="close" onPress={dismiss} />
       </BlurView>
     </Modal>
   );

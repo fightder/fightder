@@ -20,7 +20,8 @@ export const Text = ({
     | "secondary"
     | "error"
     | "success"
-    | "warning";
+    | "warning"
+    | "white";
 } & ComponentProps<typeof DefaultText>) => {
   const mode = useColorScheme();
   return (
@@ -33,7 +34,7 @@ export const Text = ({
               fontSize: fontSizes[fontSize],
             }
           : {},
-        textColorTheme[mode][color],
+        color == "white" ? { color: "white" } : textColorTheme[mode][color],
 
         style,
       ]}
@@ -82,7 +83,7 @@ export const textColorTheme = {
       color: COLORS.secondary[600],
     },
     error: {
-      color: COLORS.background[800],
+      color: COLORS.error[800],
     },
     success: {
       color: COLORS.secondary[800],
@@ -106,7 +107,7 @@ export const textColorTheme = {
       color: COLORS.secondary[500],
     },
     error: {
-      color: COLORS.background[900],
+      color: COLORS.error[900],
     },
     success: {
       color: COLORS.secondary[300],

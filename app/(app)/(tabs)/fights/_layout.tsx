@@ -34,9 +34,11 @@ export default function FightLayout() {
     <View flex bg={1}>
       <SafeTop title="Fights" />
       <MaterialTopTabs
+        style={{ padding: 10 }}
         screenOptions={{
           tabBarLabelStyle: {
-            color: COLORS.background[50],
+            color:
+              mode == "dark" ? COLORS.background[50] : COLORS.background[900],
             fontWeight: "bold",
             fontSize: 17,
           },
@@ -48,9 +50,11 @@ export default function FightLayout() {
             backgroundColor: "transparent",
           },
           tabBarIndicatorStyle: {
-            // height: "100%",
-            borderRadius: 15,
-            backgroundColor: COLORS.primary[900],
+            height: "100%",
+            borderRadius: 35,
+            // backgroundColor: "red",
+            backgroundColor:
+              mode == "dark" ? COLORS.background[800] : COLORS.background[300],
           },
           tabBarItemStyle: {
             padding: 10,

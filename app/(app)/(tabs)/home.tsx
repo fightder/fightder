@@ -15,11 +15,14 @@ import { Opp, SwipeCard } from "components/SwipeCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getOpponents } from "utils/api";
 import OppModal from "components/oppModal";
+import { useRouter } from "expo-router";
 
 const Home = () => {
   const [opps, setOpps] = React.useState([]);
   const [filter, setFilter] = React.useState("all");
-  const [expanded, setExpanded] = React.useState<Opp | null>(null);
+  // const [expanded, setExpanded] = React.useState<Opp | null>(null);
+  const router = useRouter();
+
   const { status, data, error } = useQuery({
     queryKey: ["opponents", filter],
     queryFn: getOpponents,
@@ -30,9 +33,9 @@ const Home = () => {
   const r = width * 0.33;
   return (
     <View bg={1} style={{ flex: 1 }}>
-      {!!expanded && (
+      {/* {!!expanded && (
         <OppModal opp={expanded} dismiss={() => setExpanded(null)} />
-      )}
+      )} */}
       <SafeTop />
       <View
         row
@@ -56,7 +59,7 @@ const Home = () => {
           {/* <IconButton name="add" href="/add-friend" /> */}
         </View>
       </View>
-      <View flex style={{ top: -20, zIndex: 200 }}>
+      <View flex style={{ top: -30, zIndex: 200 }}>
         {status == "success" ? (
           <Swiper
             disableBottomSwipe
@@ -64,9 +67,17 @@ const Home = () => {
               padding: 0,
               margin: 0,
             }}
-            cards={status == "success" ? data : []}
-            renderCard={(card: Opp) => {
-              return <SwipeCard data={card} expand={() => setExpanded(card)} />;
+            cards={status == "success" ? data?.slice(0, 10) : []}
+            renderCard={(card: Opp, i) => {
+              return (
+                <SwipeCard
+                  data={card}
+                  i={i}
+                  // expand={() => {
+                  //   router.push(`opps/${i}`);
+                  // }}
+                />
+              );
             }}
             animateOverlayLabelsOpacity
             animateCardOpacity
@@ -81,6 +92,12 @@ const Home = () => {
               console.log(cardIndex, "onSwipedLeft");
             }}
             onSwipedRight={(cardIndex) => {
+              const opp = data[cardIndex];
+              if (opp.is_pro) {
+                router.push(
+                  `match/${opp.account_id}?profileImage=${opp.avatarfull}`
+                );
+              }
               console.log(cardIndex, "onSwipedRight");
             }}
             overlayOpacityHorizontalThreshold={0.1}
@@ -105,7 +122,7 @@ const Home = () => {
                 },
               },
               right: {
-                title: "LIKE",
+                title: "FIGHT",
                 style: {
                   label: {
                     backgroundColor: "black",
@@ -144,7 +161,9 @@ const Home = () => {
             backgroundColor="transparent"
           ></Swiper>
         ) : (
-          <ActivityIndicator />
+          <View flex>
+            <ActivityIndicator />
+          </View>
         )}
       </View>
       <SafeBottom />
