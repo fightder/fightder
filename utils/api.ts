@@ -13,6 +13,19 @@ export const getOpponents = async ({ queryKey }) => {
   }
 };
 
+export const getFights = async ({ queryKey }) => {
+  if (queryKey[1] == "all") {
+    const res = await axios.get("https://api.opendota.com/api/proPlayers");
+    return res.data;
+  } else if (queryKey[1]) {
+    const res = await axios.get(
+      "https://api.opendota.com/api/players/" + queryKey[1]
+    );
+    console.log(res.data);
+    return res.data;
+  }
+};
+
 const swipeLeft = async (oppId) => {
   const response = await fetch(`/api/swipeLeft/${oppId}`, { method: "POST" });
   if (!response.ok) {

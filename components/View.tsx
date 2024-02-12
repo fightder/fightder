@@ -10,6 +10,7 @@ export const View = ({
   p,
   px,
   m,
+  my,
   r,
   flex,
   style,
@@ -28,6 +29,7 @@ export const View = ({
   px?: number;
   r?: number;
   m?: number;
+  my?: number;
   flex?: boolean;
   bg?: 1 | 2 | 3 | 4;
   variant?: "primary" | "secondary" | "text";
@@ -58,6 +60,7 @@ export const View = ({
         p ? { padding: p } : {},
         px ? { paddingHorizontal: px } : {},
         m ? { margin: m } : {},
+        my ? { marginVertical: my } : {},
         r ? { borderRadius: r } : {},
         z ? { zIndex: z } : {},
         gap ? { gap } : {},

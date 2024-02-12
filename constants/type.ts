@@ -14,7 +14,7 @@ export const interactionParser = z.object({
     z.object({
       title: z.string(),
       description: z.string(),
-    }),
+    })
   ),
 
   startDate: z.date().optional(),
@@ -83,7 +83,9 @@ export const appParser = z.object({
 
   appStoreId: z.string().optional(),
   androidPackageName: z.string().optional(),
-  url: z.string().regex(/^(http:\/\/|https:\/\/)[^\s/$.?#].[^\s]*$/)
+  url: z
+    .string()
+    .regex(/^(http:\/\/|https:\/\/)[^\s/$.?#].[^\s]*$/)
     .optional(),
 
   redirects: z.array(z.string().url()).optional(),
@@ -151,9 +153,8 @@ export const createDiscordUserParser = z.object({
 });
 
 export const userParser = z.object({
-  _id: (z.string()),
+  _id: z.string(),
   provider: z.array(z.enum(["google", "facebook", "email"])).optional(),
-  devId: (z.string()).optional(),
 
   username: z.string(),
   name: z.string(),
@@ -166,21 +167,13 @@ export const userParser = z.object({
     z.object({
       friendship: friendshipParser.or(z.string()),
       user: z.string(),
-    }),
+    })
   ),
 
-  inwardFriendRequests: z
-    .array(z.string())
-    .optional(),
-  outwardFriendRequests: z
-    .array(z.string())
-    .optional(),
-  declinedFriendRequests: z
-    .array(z.string())
-    .optional(),
-  canceledFriendRequests: z
-    .array(z.string())
-    .optional(),
+  inwardFriendRequests: z.array(z.string()).optional(),
+  outwardFriendRequests: z.array(z.string()).optional(),
+  declinedFriendRequests: z.array(z.string()).optional(),
+  canceledFriendRequests: z.array(z.string()).optional(),
 
   email: z.string(),
   password: z.string().optional(),
@@ -191,7 +184,7 @@ export const userParser = z.object({
   birthdate: z.string().optional(),
 
   apps: z.array(z.string()),
-  appUsers: (z.string()).array(),
+  appUsers: z.string().array(),
 
   location: z
     .object({
