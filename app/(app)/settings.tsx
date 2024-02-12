@@ -40,15 +40,17 @@ const Settings = () => {
   const height = 256;
   const r = width * 0.33;
   return (
-    <View style={{ flex: 1 }}>
-      <SafeTop back />
+    <View flex bg={1}>
+      <SafeTop back title="settings" />
       <SectionList
         sections={DATA}
         keyExtractor={(item, index) => item.name + index}
         renderItem={({ item }) => (
           <View
             row
-            p={10}
+            p={15}
+            bg={3}
+            r={20}
             style={{
               alignItems: "center",
               justifyContent: "flex-start",
@@ -63,7 +65,7 @@ const Settings = () => {
                 signOut();
               }}
             />
-            <Text color="error">{item.name}</Text>
+            <Text>{item.name}</Text>
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => <Text>{title}</Text>}

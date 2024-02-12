@@ -25,6 +25,7 @@ const App = () => {
   const r = width * 0.33;
 
   const isValid = useSharedValue(false);
+  console.log(user);
 
   return (
     <View bg={1} flex>
@@ -64,8 +65,8 @@ const App = () => {
             radius={35}
           />
           <Text>{user?.name}</Text>
-          {user.bio && <Text fontSize="md"> {user.bio}</Text>}
-          <Text fontSize="xl"> Friends: {user?.friends.length}</Text>
+          {user?.bio && <Text fontSize="md"> {user?.bio}</Text>}
+          <Text fontSize="xl"> Friends: {user?.friends?.length}</Text>
           <Text fontSize="xl"> Friendships: {"notyet"}</Text>
           <Text fontSize="xl"> interests: {"notyet"}</Text>
           <JsonViewer json={JSON.stringify(user)} />

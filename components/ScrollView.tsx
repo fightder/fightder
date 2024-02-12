@@ -14,8 +14,13 @@ export const ScrollView = ({
   p,
   m,
   r,
+  flex,
   style,
   bg,
+  variant,
+  color,
+  glass,
+  z,
   ...props
 }: {
   children: React.ReactNode;
@@ -25,7 +30,12 @@ export const ScrollView = ({
   p?: number;
   r?: number;
   m?: number;
+  flex?: boolean;
   bg?: 1 | 2 | 3 | 4;
+  variant?: "primary" | "secondary" | "text";
+  color?: string;
+  glass?: boolean;
+  z?: number;
 } & ComponentProps<typeof DefaultScrollView>) => {
   const mode = useColorScheme();
 
@@ -39,17 +49,25 @@ export const ScrollView = ({
               justifyContent: "space-between",
             }
           : col
-          ? {
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }
-          : {},
+            ? {
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }
+            : {},
         backgrounds[mode][bg || 1],
         p ? { padding: p } : {},
         m ? { margin: m } : {},
         r ? { borderRadius: r } : {},
+        z ? { zIndex: z } : {},
         gap ? { gap } : {},
+        flex ? { flex: 1 } : {},
+        glass
+          ? {
+              backgroundColor: "rgba(255,255,255,0.1)",
+              backdropFilter: "blur(10px)",
+            }
+          : {},
         style,
       ]}
       {...props}

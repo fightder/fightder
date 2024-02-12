@@ -8,9 +8,19 @@ import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Image } from "react-native";
 import SignInForm from "components/SignInForm";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+//   statusCodes,
+// } from "@react-native-google-signin/google-signin";
+import { supabase } from "utils/supabase";
 
 export default function SignIn() {
   const { signIn, isLoading, session } = useSession();
+  // GoogleSignin.configure({
+  //   scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  //   webClientId: "YOUR CLIENT ID FROM GOOGLE CONSOLE",
+  // });
   // const [signUp, setSignUp] = useState(false);
   useEffect(() => {
     console.log(session, isLoading);
@@ -32,7 +42,35 @@ export default function SignIn() {
         source={require("assets/icon.png")}
       />
       <SignInForm />
-
+      {/* <GoogleSigninButton
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={async () => {
+          try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            if (userInfo.idToken) {
+              const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: "google",
+                token: userInfo.idToken,
+              });
+              console.log(error, data);
+            } else {
+              throw new Error("no ID token present!");
+            }
+          } catch (error: any) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+              // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+              // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+              // play services not available or outdated
+            } else {
+              // some other error happened
+            }
+          }
+        }}
+      /> */}
       <View flex style={{ marginBottom: "auto" }} />
       <Button
         onPress={async () => {

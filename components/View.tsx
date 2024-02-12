@@ -10,6 +10,7 @@ export const View = ({
   p,
   px,
   m,
+  my,
   r,
   flex,
   style,
@@ -17,6 +18,7 @@ export const View = ({
   variant,
   color,
   glass,
+  z,
   ...props
 }: {
   children?: React.ReactNode;
@@ -27,11 +29,13 @@ export const View = ({
   px?: number;
   r?: number;
   m?: number;
+  my?: number;
   flex?: boolean;
   bg?: 1 | 2 | 3 | 4;
   variant?: "primary" | "secondary" | "text";
   color?: string;
   glass?: boolean;
+  z?: number;
 } & ComponentProps<typeof DefaultView>) => {
   const mode = useColorScheme();
 
@@ -45,18 +49,20 @@ export const View = ({
               justifyContent: "space-between",
             }
           : col
-          ? {
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }
-          : {},
+            ? {
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }
+            : {},
         color ? { backgroundColor: color } : {},
         backgrounds[mode][variant || bg || 0],
         p ? { padding: p } : {},
         px ? { paddingHorizontal: px } : {},
         m ? { margin: m } : {},
+        my ? { marginVertical: my } : {},
         r ? { borderRadius: r } : {},
+        z ? { zIndex: z } : {},
         gap ? { gap } : {},
         flex ? { flex: 1 } : {},
         glass
