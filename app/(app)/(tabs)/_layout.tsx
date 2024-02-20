@@ -79,7 +79,7 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
-          name="chat"
+          name="chats"
           options={{
             tabBarIcon: TabBarIcon("chat"),
           }}

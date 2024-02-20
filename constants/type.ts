@@ -158,33 +158,17 @@ export const userParser = z.object({
 
   username: z.string(),
   name: z.string(),
-  avatar: z.string().optional(),
-  age: z.number().optional(),
 
+  history: z.array(z.string()).optional(),
+  fights: z.array(z.string()).optional(),
+  opponents: z.array(z.string()),
   profilePicture: z.string().optional(),
 
-  friends: z.array(
-    z.object({
-      friendship: friendshipParser.or(z.string()),
-      user: z.string(),
-    })
-  ),
-
-  inwardFriendRequests: z.array(z.string()).optional(),
-  outwardFriendRequests: z.array(z.string()).optional(),
-  declinedFriendRequests: z.array(z.string()).optional(),
-  canceledFriendRequests: z.array(z.string()).optional(),
-
   email: z.string(),
-  password: z.string().optional(),
   verified: z.boolean(),
   createdAt: z.date().or(z.string()),
 
-  phoneNumber: z.string().optional(),
   birthdate: z.string().optional(),
-
-  apps: z.array(z.string()),
-  appUsers: z.string().array(),
 
   location: z
     .object({
@@ -194,9 +178,25 @@ export const userParser = z.object({
     .optional(),
 
   interests: z.array(z.string()).optional(),
-  hobbies: z.array(z.string()).optional(),
   bio: z.string().optional(),
 });
 
+const fightParser = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  rule: z.string(),
+  date: z.string(), // You might want to use z.date() if dates need to be validated
+  location: z.string(),
+  opponentId: z.string(),
+  opponentImage: z.string(),
+  inviterId: z.string(),
+  inviterImage: z.string(),
+  prize: z.string(),
+  public: z.boolean(),
+  spectators: z.array(z.string()),
+});
+
+export type Fight = z.infer<typeof fightParser>;
 export type User = z.infer<typeof userParser>;
 export type App = z.infer<typeof appParser>;

@@ -25,6 +25,25 @@ export const getFights = async ({ queryKey }) => {
     return res.data;
   }
 };
+export const getChats = async ({ queryKey }) => {
+  console.log(queryKey, "wqererqk");
+  if (queryKey.length == 1) {
+    const res = await setTimeout(() => {
+      return [
+        {
+          id: "1",
+          opponentId: "1",
+          opponentImage: "https://picsum.photos/200",
+          inviterId: "2",
+          inviterImage: "https://picsum.photos/200",
+          matchAt: "2022-01-01",
+        },
+      ];
+    }, 500);
+
+    return res;
+  }
+};
 
 const swipeLeft = async (oppId) => {
   const response = await fetch(`/api/swipeLeft/${oppId}`, { method: "POST" });
