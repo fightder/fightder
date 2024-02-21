@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "components/View";
 import { Text } from "components/Text";
 import { useLocalSearchParams } from "expo-router";
@@ -13,11 +13,14 @@ const Fight = () => {
   const { id } = useLocalSearchParams();
   console.log(id, "her");
 
-  const { user } = useUser();
-  const { status, data, error } = useQuery({
-    queryKey: ["fight", id],
-    queryFn: getFights,
-  });
+  const { user, fights } = useUser();
+  useEffect(() => {
+    console.log(fights.length, "fights");
+  }, [fights]);
+  // const { status, data, error } = useQuery({
+  //   queryKey: ["fight", id],
+  //   queryFn: getFights,
+  // });
 
   // if (status != "success") {
   //   return (
@@ -29,7 +32,7 @@ const Fight = () => {
   return (
     <View flex bg={1}>
       <SafeTop back title="fight" />
-      <Text variant="header">You Got A Fight</Text>
+      <Text>{JSON.stringify(fights)}</Text>
       {/* <Image
         source={{
           uri: user.profilePicture,

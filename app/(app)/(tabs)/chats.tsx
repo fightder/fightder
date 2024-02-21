@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GestureHandlerRootView,
   ScrollView,
@@ -14,26 +14,23 @@ import { FightCard } from "components/FightCard";
 import { ChatItem } from "components/ChatItem";
 import { useQuery } from "@tanstack/react-query";
 import { getChats } from "utils/api";
+import { useUser } from "contexts/user.context";
 
-const Fights = () => {
-  const {
-    status,
-    data: chats,
-    error,
-  } = useQuery({
-    queryKey: ["chats"],
-    queryFn: getChats,
-  });
-  // const [chats, setChats] = useState([
-  //   {
-  //     id: "1",
-  //     opponentId: "1",
-  //     opponentImage: "https://picsum.photos/200",
-  //     inviterId: "2",
-  //     inviterImage: "https://picsum.photos/200",
-  //     matchAt: "2022-01-01",
-  //   },
-  // ]);
+const Chats = () => {
+  const { chats } = useUser();
+  // const {
+  //   status,
+  //   data: chats,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["chats"],
+  //   queryFn: getChats,
+  // });
+  useEffect(() => {
+    // getChats();
+
+    console.log(chats.length, "chats");
+  }, [chats]);
 
   const width = 256;
   const height = 256;
@@ -41,19 +38,19 @@ const Fights = () => {
   return (
     <View bg={1} flex>
       <SafeTop title={"Chats"} />
-      {!status == "success" ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          data={chats}
-          style={{
-            padding: 10,
-          }}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ChatItem chat={item} />}
-        />
-      )}
+      {/* {!(status == "success") || !chats ? ( */}
+      {/* <Text>Loading...</Text> */}
+      {/* ) : ( */}
+      <FlatList
+        data={chats}
+        style={{
+          padding: 10,
+        }}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => <ChatItem chat={item} />}
+      />
+      {/* )} */}
     </View>
   );
 };
-export default Fights;
+export default Chats;

@@ -1,6 +1,7 @@
 export type Fight = {
   id: string;
-  title: string;
+  // title: string;
+  sport: string;
   description: string;
   rule: string;
   date: string;

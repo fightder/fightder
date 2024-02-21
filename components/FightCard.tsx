@@ -11,7 +11,7 @@ export const FightCard = ({ fight }: { fight: Fight }) => {
     <Link href={{ pathname: "fights/[id]", params: { id: "123" } }} asChild>
       <Pressable>
         <View flex bg={2} r={20} p={10} my={10}>
-          <Text variant="subtitle">{fight.title}</Text>
+          <Text variant="subtitle">{fight.sport}</Text>
           <View row p={10}>
             <Image
               source={{ uri: fight.inviterImage }}
@@ -37,12 +37,14 @@ export const FightCard = ({ fight }: { fight: Fight }) => {
             }}
           >
             <IconButton name="eye" />
-            {fight.spectators.slice(0, 8).map((spectator) => (
-              <Image
-                source={{ uri: spectator }}
-                style={{ width: 40, height: 40, borderRadius: 50 }}
-              />
-            ))}
+            {fight?.spectators
+              ?.slice(0, 8)
+              .map((spectator) => (
+                <Image
+                  source={{ uri: spectator }}
+                  style={{ width: 40, height: 40, borderRadius: 50 }}
+                />
+              ))}
           </View>
         </View>
       </Pressable>

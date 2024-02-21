@@ -25,23 +25,65 @@ export const getFights = async ({ queryKey }) => {
     return res.data;
   }
 };
+
 export const getChats = async ({ queryKey }) => {
   console.log(queryKey, "wqererqk");
   if (queryKey.length == 1) {
-    const res = await setTimeout(() => {
-      return [
+    return [
+      {
+        _id: "1",
+        opponentId: "1",
+        opponentImage: "https://picsum.photos/200",
+        opponentName: "Mike Tyson",
+        matchAt: "2021-08-01T00:00:00.000Z",
+        logs: [
+          {
+            from: "1",
+            message: "Hello",
+            to: "2",
+            time: "2021-08-01T00:00:00.000Z",
+          },
+        ],
+      },
+    ];
+  } else {
+    const id = queryKey[1];
+    return {
+      _id: id,
+      opponentId: id,
+      opponentImage: "https://picsum.photos/200",
+      opponentName: "Mike Tyson",
+      matchAt: "2021-08-01T00:00:00.000Z",
+      logs: [
         {
-          id: "1",
-          opponentId: "1",
-          opponentImage: "https://picsum.photos/200",
-          inviterId: "2",
-          inviterImage: "https://picsum.photos/200",
-          matchAt: "2022-01-01",
+          from: "1",
+          message: "Hello",
+          to: "2",
+          time: "2021-08-01T00:00:00.000Z",
         },
-      ];
-    }, 500);
+      ],
+    };
+  }
+};
 
-    return res;
+export const getChat = async ({ queryKey }) => {
+  console.log(queryKey, "wqererqk");
+  if (queryKey.length == 1) {
+    return {
+      _id: "1",
+      opponentId: "1",
+      opponentImage: "https://picsum.photos/200",
+      opponentName: "Mike Tyson",
+      matchAt: "2021-08-01T00:00:00.000Z",
+      logs: [
+        {
+          from: "1",
+          message: "Hello",
+          to: "2",
+          time: "2021-08-01T00:00:00.000Z",
+        },
+      ],
+    };
   }
 };
 

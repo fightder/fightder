@@ -181,6 +181,22 @@ export const userParser = z.object({
   bio: z.string().optional(),
 });
 
+export const chatParser = z.object({
+  _id: z.string(),
+  opponentId: z.string(),
+  opponentImage: z.string(),
+  opponentName: z.string(),
+  matchAt: z.string(),
+  logs: z.array(
+    z.object({
+      from: z.string(),
+      message: z.string(),
+      to: z.string(),
+      time: z.string(),
+    })
+  ),
+});
+
 const fightParser = z.object({
   id: z.string(),
   title: z.string(),
@@ -200,3 +216,5 @@ const fightParser = z.object({
 export type Fight = z.infer<typeof fightParser>;
 export type User = z.infer<typeof userParser>;
 export type App = z.infer<typeof appParser>;
+export type AppUser = z.infer<typeof appUserParser>;
+export type Chat = z.infer<typeof chatParser>;

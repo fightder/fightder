@@ -16,12 +16,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getOpponents } from "utils/api";
 import OppModal from "components/oppModal";
 import { useRouter } from "expo-router";
+import { useUser } from "contexts/user.context";
 
 const Home = () => {
   const [opps, setOpps] = React.useState([]);
   const [filter, setFilter] = React.useState("all");
   // const [expanded, setExpanded] = React.useState<Opp | null>(null);
   const router = useRouter();
+  const { addOpponent } = useUser();
 
   const { status, data, error } = useQuery({
     queryKey: ["opponents", filter],
@@ -94,8 +96,13 @@ const Home = () => {
             onSwipedRight={(cardIndex) => {
               const opp = data[cardIndex];
               if (opp.is_pro) {
+                addOpponent({
+                  _id: opp.account_id,
+                  profilePicture: opp.avatarfull,
+                  name: opp.name,
+                });
                 router.push(
-                  `match/${opp.account_id}?profileImage=${opp.avatarfull}`
+                  `/match/${opp.account_id}?profileImage=${opp.avatarfull}&name=${opp.name}`
                 );
               }
               console.log(cardIndex, "onSwipedRight");
