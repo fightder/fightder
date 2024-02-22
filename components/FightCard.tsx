@@ -11,7 +11,7 @@ export const FightCard = ({ fight }: { fight: Fight }) => {
     <Link href={{ pathname: "fights/[id]", params: { id: "123" } }} asChild>
       <Pressable>
         <View flex bg={2} r={20} p={10} my={10}>
-          <Text variant="subtitle">{fight.sport}</Text>
+          <Text variant="subtitle">{fight?.sport}</Text>
           <View row p={10}>
             <Image
               source={{ uri: fight.inviterImage }}
@@ -24,7 +24,7 @@ export const FightCard = ({ fight }: { fight: Fight }) => {
             />
           </View>
           <View row>
-            <Text>{fight.date}</Text>
+            <Text>{fight.datetime}</Text>
             <Text>{fight.location}</Text>
           </View>
           <View

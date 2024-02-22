@@ -8,6 +8,7 @@ import { storage } from "utils/storage";
 import { useSession } from "./auth.context";
 import { getCurrentUserFromFync } from "utils/fync";
 import { Fight } from "utils/type";
+import Chats from "app/(app)/(tabs)/chats";
 
 const UserContext = React.createContext<{
   user: User;
@@ -15,12 +16,14 @@ const UserContext = React.createContext<{
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
   createFight: (fight: Fight) => void;
+  cancelFight: (fight: Fight) => void;
   addOpponent: (opp: User) => void;
   notifications: string[];
 }>({
   user: {},
   fights: [],
   createFight: () => {},
+  cancelFight: () => {},
   chats: [],
   setChats: () => {},
   addOpponent: () => {},
@@ -68,7 +71,71 @@ export function UserProvider(props: React.PropsWithChildren) {
 
   const createFight = (fight: Fight) => {
     console.log(fight, "fight");
-    setFights((fights) => [...fights, fight]);
+    const opponent = chats.find((chat) => chat._id === fight.opponentId);
+    setFights((fights) => [
+      ...fights,
+      {
+        ...fight,
+        status: "pending",
+
+        _id: String(fights.length + 1),
+        opponentId: fight.opponentId,
+        opponentImage: opponent?.opponentImage,
+        opponentName: opponent?.opponentName,
+        inviterId: user._id,
+        inviterImage: user.profilePicture,
+        inviterName: user.name,
+        matchAt: new Date().toISOString(),
+      },
+    ]);
+
+    setChats(
+      chats.map((chat) => {
+        if (chat.opponentId === fight.opponentId) {
+          // Assuming each chat has a unique `id` or similar identifier
+          return {
+            ...chat,
+            logs: [
+              ...chat.logs,
+              {
+                from: user._id,
+                message:
+                  "You sent a fight request;;" + String(fights.length + 1),
+                time: new Date().toISOString(),
+              },
+            ],
+          };
+        } else {
+          return chat;
+        }
+      })
+    );
+  };
+
+  const cancelFight = (fightId: string) => {
+    setFights(fights.filter((f) => f._id !== fightId));
+    const opponentId = fights.find((f) => f._id === fightId).opponentId;
+
+    setChats(
+      chats.map((chat) => {
+        if (chat.opponentId === opponentId) {
+          // Assuming each chat has a unique `id` or similar identifier
+          return {
+            ...chat,
+            logs: [
+              ...chat.logs,
+              {
+                from: user._id,
+                message: "You cancelled the fight request",
+                time: new Date().toISOString(),
+              },
+            ],
+          };
+        } else {
+          return chat;
+        }
+      })
+    );
   };
   const addOpponent = (opp: User) => {
     // add to chats
@@ -123,6 +190,7 @@ export function UserProvider(props: React.PropsWithChildren) {
         setChats,
         fights,
         createFight,
+        cancelFight,
         notifications,
 
         addOpponent,

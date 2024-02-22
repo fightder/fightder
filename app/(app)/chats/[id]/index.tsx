@@ -16,12 +16,13 @@ import { useUser } from "contexts/user.context";
 import { Input } from "components/Input";
 import { IconButton } from "components/IconButton";
 import { Button } from "components/Button";
+import { FightCard } from "components/FightCard";
 
 const Chat = () => {
   const { id } = useLocalSearchParams();
   console.log(id, "her");
 
-  const { user, chats, setChats } = useUser();
+  const { user, chats, setChats, fights, cancelFight } = useUser();
   const [chat, setChat] = React.useState(chats[Number(id) - 1]);
   const [message, setMessage] = React.useState("");
   // const { status, data, error } = useQuery({
@@ -48,11 +49,37 @@ const Chat = () => {
           data={chats[Number(id) - 1]?.logs}
           renderItem={({ item }) => {
             console.log(item);
+            if (item.message.includes("You sent a fight request;;")) {
+              const fightId = item.message.split(";;")[1];
+              console.log(fightId);
+
+              const fight = fights.find((fight) => fight._id === fightId);
+
+              // return <FightCard fight={fight} />;
+              return (
+                <View col flex>
+                  <Text variant="body" style={{ padding: 10 }}>
+                    You sent a fight request to {chat.opponentName || "someone"}
+                  </Text>
+                  <FightCard fight={fight} />
+                  {/* <Button
+                    onPress={() => {
+                      cancelFight(fightId);
+                    }}
+                  >
+                    <Text>Cancel</Text>
+                  </Button> */}
+                </View>
+              );
+            }
             return (
               <View
                 row
                 p={5}
-                style={{ alignItems: "baseline", justifyContent: "flex-start" }}
+                style={{
+                  alignItems: "baseline",
+                  justifyContent: "flex-start",
+                }}
               >
                 <Image
                   source={{

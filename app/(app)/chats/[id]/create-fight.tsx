@@ -9,9 +9,10 @@ import { SafeBottom, SafeTop } from "components/SafeTop";
 import { useUser } from "contexts/user.context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 const CreateFight = () => {
-  const { createFight } = useUser();
+  const { createFight, setChats, chats } = useUser();
   const { id } = useLocalSearchParams();
   const [datetime, setDatetime] = React.useState(new Date());
   const [location, setLocation] = React.useState("");
@@ -30,7 +31,7 @@ const CreateFight = () => {
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View bg={1} flex>
         <SafeTop back title="Create Fight" />
-        <View p={10}>
+        <View p={10} gap={10}>
           <Text variant="title">Date and time</Text>
           <DateTimePicker
             value={datetime}
@@ -65,11 +66,15 @@ const CreateFight = () => {
         <Button
           onPress={() => {
             console.log("Create Fight");
+            if (!datetime || !location || !sport || !visibility) {
+              alert("Please fill all the fields");
+              return;
+            }
             createFight({
-              datetime,
+              datetime: datetime.toISOString(),
               location,
               sport,
-              opponent: id,
+              opponentId: id as string,
               visibility,
               notes,
               createdAt: new Date().toISOString(),
@@ -78,9 +83,21 @@ const CreateFight = () => {
             router.push("/chats/" + id);
           }}
         >
-          <View variant="primary" r={20} m={10} p={10}>
+          <LinearGradient
+            colors={["#rgb(214,24,93)", "rgb(222,132,94)", "#39e"]}
+            style={{
+              padding: 15,
+              alignItems: "center",
+              borderRadius: 10,
+              margin: 10,
+            }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            {/* <View variant="primary" r={20} m={10} p={10}> */}
             <Text variant="title">Create Fight</Text>
-          </View>
+            {/* </View> */}
+          </LinearGradient>
         </Button>
         <SafeBottom />
       </View>

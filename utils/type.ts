@@ -1,15 +1,18 @@
 export type Fight = {
-  id: string;
+  _id: string;
   // title: string;
   sport: string;
-  description: string;
+  status: string;
   rule: string;
-  date: string;
+  notes: string;
+  datetime: string;
   location: string;
   opponentId: string;
   opponentImage: string;
+  opponentName: string;
   inviterId: string;
   inviterImage: string;
+  inviterName: string;
   prize: string;
   public: boolean;
   spectators: string[];
