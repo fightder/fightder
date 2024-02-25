@@ -5,7 +5,6 @@ import { Linking } from "react-native";
 import endpoints from "constants/endpoints";
 import * as WebBrowser from "expo-web-browser";
 import { storage } from "utils/storage";
-import { useSession } from "./auth.context";
 import { getCurrentUserFromFync } from "utils/fync";
 import { Fight } from "utils/type";
 import Chats from "app/(app)/(tabs)/chats";
@@ -67,7 +66,6 @@ export function UserProvider(props: React.PropsWithChildren) {
 
   const [error, setError] = useState<string>();
   const [loaded, setLoaded] = useState(false);
-  const { session } = useSession();
 
   const createFight = (fight: Fight) => {
     console.log(fight, "fight");

@@ -10,6 +10,12 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "enterpriseProvisioning": "universal"
+      }
     }
   }
 }

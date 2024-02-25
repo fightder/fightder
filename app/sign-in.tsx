@@ -16,7 +16,7 @@ import SignInForm from "components/SignInForm";
 import { supabase } from "utils/supabase";
 
 export default function SignIn() {
-  const { signIn, isLoading, session } = useSession();
+  const { signIn, isLoading, session, signInWithEmail } = useSession();
   // GoogleSignin.configure({
   //   scopes: ["https://www.googleapis.com/auth/drive.readonly"],
   //   webClientId: "YOUR CLIENT ID FROM GOOGLE CONSOLE",
@@ -41,7 +41,7 @@ export default function SignIn() {
         }}
         source={require("assets/icon.png")}
       />
-      <SignInForm />
+      <SignInForm onSignIn={signInWithEmail} />
       {/* <GoogleSigninButton
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}

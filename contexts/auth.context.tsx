@@ -5,16 +5,19 @@ import endpoints from "constants/endpoints";
 import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
 import { User } from "constants/type";
+import { set } from "zod";
 
 const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
   signOut: () => void;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   getFyncUserById: (id: string) => Promise<User | null>;
   session?: string | null;
   isLoading: boolean;
 }>({
   signIn: () => null,
   signOut: () => null,
+  signInWithEmail: () => null,
   getFyncUserById: () => null,
   session: null,
   isLoading: false,
@@ -66,37 +69,43 @@ export function SessionProvider(props: React.PropsWithChildren) {
   useEffect(() => {
     setSession("hi");
   }, []);
+
+  const signIn = async () => {
+    const authUrl = process.env.EXPO_PUBLIC_FYNC_AUTH_URL;
+    const res = await WebBrowser.openAuthSessionAsync(authUrl);
+    // Perform sign-in logic here
+    console.log(res);
+
+    if (res.type !== "success") {
+      return;
+    }
+    const code = res.url.split("?code=")[1];
+
+    // get access token
+    try {
+      const accessToken = await exchangeCodeForToken(code);
+      console.log(accessToken);
+      if (accessToken) {
+        setSession(accessToken);
+      } else {
+        console.log("no access token");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const signInWithEmail = async (email: string, password: string) => {
+    setSession("hi");
+  };
   return (
     <AuthContext.Provider
       value={{
-        signIn: async () => {
-          const authUrl = process.env.EXPO_PUBLIC_FYNC_AUTH_URL;
-          const res = await WebBrowser.openAuthSessionAsync(authUrl);
-          // Perform sign-in logic here
-          console.log(res);
-
-          if (res.type !== "success") {
-            return;
-          }
-          const code = res.url.split("?code=")[1];
-
-          // get access token
-          try {
-            const accessToken = await exchangeCodeForToken(code);
-            console.log(accessToken);
-            if (accessToken) {
-              setSession(accessToken);
-            } else {
-              console.log("no access token");
-            }
-          } catch (e) {
-            console.log(e);
-          }
-        },
+        signIn,
         signOut: () => {
           setSession(null);
         },
         session,
+        signInWithEmail,
         getFyncUserById: async (id: string) => {
           console.log(session, id, "ssidd");
           try {

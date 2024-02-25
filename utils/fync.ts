@@ -1,6 +1,5 @@
 import axios, { AxiosError } from "axios";
 import endpoints from "constants/endpoints";
-import { useSession } from "contexts/auth.context";
 
 export const getCurrentUserFromFync = async (session: string) => {
   console.log(session);

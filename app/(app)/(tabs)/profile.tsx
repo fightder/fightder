@@ -17,7 +17,7 @@ import { MotiView, ScrollView } from "moti";
 import { JsonViewer } from "components/JsonViewer";
 import { ProfileImage } from "components/ProfileImage";
 const App = () => {
-  const { user } = useUser();
+  const { user, chats } = useUser();
   const { signOut } = useSession();
   const [show, setShow] = React.useState(true);
   const width = 256;
@@ -66,10 +66,7 @@ const App = () => {
           />
           <Text>{user?.name}</Text>
           {user?.bio && <Text fontSize="md"> {user?.bio}</Text>}
-          <Text fontSize="xl"> Friends: {user?.friends?.length}</Text>
-          <Text fontSize="xl"> Friendships: {"notyet"}</Text>
-          <Text fontSize="xl"> interests: {"notyet"}</Text>
-          <JsonViewer json={JSON.stringify(user)} />
+          <Text fontSize="xl">Matches: {chats.length}</Text>
           {/* <Canvas style={{ width, height }}>
           <Group blendMode="exclusion">
             <Circle cx={r} cy={r} r={r} color="cyan" />

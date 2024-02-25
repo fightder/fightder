@@ -5,15 +5,20 @@ import { Text } from "./Text";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { useColorScheme } from "react-native";
+import { router } from "expo-router";
 
-const SignInForm = () => {
+const SignInForm = ({
+  onSignIn,
+}: {
+  onSignIn: (email: string, password: string) => void;
+}) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [repeatPassword, setRepeatPassword] = React.useState("");
   const [signUp, setSignUp] = React.useState(false);
   const colorMode = useColorScheme();
 
-  const onSignIn = () => {};
+  // const onSignIn = () => {};
   const onSignUp = () => {};
   return (
     <>
@@ -84,7 +89,8 @@ const SignInForm = () => {
             if (signUp) {
               onSignUp();
             } else {
-              onSignIn();
+              onSignIn(email, password);
+              router.replace("/home");
             }
           }}
         >
