@@ -13,6 +13,7 @@ export const View = ({
   my,
   r,
   flex,
+  center,
   style,
   bg,
   variant,
@@ -31,6 +32,7 @@ export const View = ({
   m?: number;
   my?: number;
   flex?: boolean;
+  center?: boolean;
   bg?: 1 | 2 | 3 | 4;
   variant?: "primary" | "secondary" | "text";
   color?: string;
@@ -65,6 +67,7 @@ export const View = ({
         z ? { zIndex: z } : {},
         gap ? { gap } : {},
         flex ? { flex: 1 } : {},
+        center ? { justifyContent: "center", alignItems: "center" } : {},
         glass
           ? {
               backgroundColor: "rgba(255,255,255,0.1)",

@@ -168,7 +168,7 @@ const Home = () => {
             backgroundColor="transparent"
           ></Swiper>
         ) : (
-          <View flex>
+          <View flex center>
             <ActivityIndicator />
           </View>
         )}
