@@ -27,12 +27,16 @@ export default function SignIn() {
   }, [session, isLoading]);
 
   return (
-    <View flex color="#161F2D" style={{ alignItems: "center" }}>
+    <View
+      flex
+      bg={1}
+      style={{ alignItems: "center", justifyContent: "flex-end" }}
+    >
       <SafeTop />
       <Text variant="header" style={{ textAlign: "center" }}>
-        FYNC
+        🔥Fightder
       </Text>
-      <Image
+      {/* <Image
         width={100}
         height={100}
         style={{
@@ -40,39 +44,18 @@ export default function SignIn() {
           height: 100,
         }}
         source={require("assets/icon.png")}
+      /> */}
+
+      <View
+        flex
+        style={{
+          marginBottom: "auto",
+          alignItems: "flex-end",
+          justifyContent: "flex-end",
+        }}
       />
       <SignInForm onSignIn={signInWithEmail} />
-      {/* <GoogleSigninButton
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={async () => {
-          try {
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            if (userInfo.idToken) {
-              const { data, error } = await supabase.auth.signInWithIdToken({
-                provider: "google",
-                token: userInfo.idToken,
-              });
-              console.log(error, data);
-            } else {
-              throw new Error("no ID token present!");
-            }
-          } catch (error: any) {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-              // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-              // operation (e.g. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-              // play services not available or outdated
-            } else {
-              // some other error happened
-            }
-          }
-        }}
-      /> */}
-      <View flex style={{ marginBottom: "auto" }} />
-      <Button
+      {/* <Button
         onPress={async () => {
           await signIn();
           router.replace("/home");
@@ -83,8 +66,9 @@ export default function SignIn() {
             Sign In with Fync
           </Text>
         </View>
-      </Button>
+      </Button> */}
       <SafeBottom />
+      <View style={{ flex: 0.2 }} />
     </View>
   );
 }

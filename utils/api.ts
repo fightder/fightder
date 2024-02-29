@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getOpponents = async ({ queryKey }) => {
   if (queryKey[1] == "all") {
-    const res = await axios.get("https://api.opendota.com/api/proPlayers");
+    const res = await axios.get("https://api.fightder.com");
     return res.data;
   } else if (queryKey[1]) {
     const res = await axios.get(

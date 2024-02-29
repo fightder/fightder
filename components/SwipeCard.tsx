@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
+import { User } from "constants/type";
+import TagList from "./TagList";
 
 export type Opp = {
   // [x: string]: any;
@@ -19,7 +21,7 @@ export type Opp = {
   canMatch: boolean;
   tags: string[];
   bio: string;
-  photos: string[];
+  images: string[];
   account_id: number;
   steamid: string;
   avatar: string;
@@ -42,11 +44,10 @@ export type Opp = {
   is_pro: boolean;
 };
 
-export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
+export const SwipeCard = ({ data: opp, i }: { data: User; i: number }) => {
   const [index, setIndex] = useState(0);
   const PAGE_WIDTH = useWindowDimensions().width;
-  console.log(opp, "here?");
-  opp.photos = [opp.avatarfull, ...photos];
+  console.log(opp, "here?", opp.activities);
 
   if (!opp) {
     return <View />;
@@ -82,8 +83,8 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
           console.log("pressable");
           setIndex((prev) => {
             // return 2;
-            if (prev + 1 < opp.photos.length) return prev + 1;
-            return opp.photos.length - 1;
+            if (prev + 1 < opp.images.length) return prev + 1;
+            return opp.images.length - 1;
           });
         }}
       />
@@ -99,13 +100,13 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
           justifyContent: "space-evenly",
         }}
       >
-        {opp.photos.map((photo, i) => (
+        {opp.images?.map((photo, i) => (
           <View
             key={i}
             r={50}
             style={{
               zIndex: 20,
-              width: PAGE_WIDTH / opp.photos.length - 25,
+              width: PAGE_WIDTH / opp.images.length - 25,
               marginHorizontal: 5,
 
               height: 3,
@@ -141,7 +142,7 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
           }}
         ></LinearGradient>
 
-        {opp.photos[index] && (
+        {opp.images[index] && (
           <Image
             // sharedTransitionTag="image"
             style={[
@@ -153,7 +154,7 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
               { width: PAGE_WIDTH },
             ]}
             key={index}
-            source={{ uri: opp.photos[index] }}
+            source={{ uri: opp.images[index] }}
           />
         )}
 
@@ -176,14 +177,21 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
           >
             <View p={10} flex>
               <Text variant="title" color="white">
-                {opp.name}
+                {opp.username},{" "}
+                {Math.floor(
+                  (Number(new Date()) - Number(new Date(2000, 1, 1))) /
+                    31557600000
+                )}
               </Text>
               {index == 0 ? (
-                <Text color="white" variant="body">
-                  {/* {opp.fantasy_role} */}
-                  {opp.personaname}
-                </Text>
-              ) : index == 1 ? (
+                <TagList tags={opp.activities} />
+              ) : // <Text color="white" variant="body">
+              //   {Math.floor(
+              //     (Number(new Date()) - Number(new Date(2000, 1, 1))) /
+              //       31557600000
+              //   )}
+              // </Text>
+              index == 1 ? (
                 <Text color="white" variant="body">
                   {/* {opp.fantasy_role} */}
                   {opp.country_code}
@@ -197,23 +205,9 @@ export const SwipeCard = ({ data: opp, i }: { data: Opp; i: number }) => {
                 </Text>
               )}
             </View>
-            {/* <IconButton
-            style={{ marginLeft: "auto", marginRight: 10 }}
-            size={30}
-            color={"white"}
-            name="arrow-up-circle-outline"
-            // onPress={expand}
-          /> */}
           </Link>
         </View>
       </View>
     </>
   );
 };
-
-const photos = [
-  `https://images.unsplash.com/photo-1551871812-10ecc21ffa2f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=929&q=80`,
-  `https://images.unsplash.com/photo-1530447920184-b88c8872?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTN8fHJvY2tldHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60`,
-  `https://images.unsplash.com/photo-1581069700310-8cf2e1b6baf0?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MjF8fHJvY2tldHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60`,
-  `https://images.unsplash.com/photo-1562802378-063ec186a863?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTJ8fHN1c2hpfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60`,
-];

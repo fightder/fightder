@@ -22,7 +22,7 @@ const SignInForm = ({
   const onSignUp = () => {};
   return (
     <>
-      <View col bg={2} glass gap={10} r={20} p={10} m={5}>
+      <View col bg={2} glass gap={15} r={20} p={10} m={5} my={10}>
         <Input
           r={20}
           p={5}
@@ -94,7 +94,7 @@ const SignInForm = ({
             }
           }}
         >
-          <View variant="text" r={5} px={20} p={10}>
+          <View variant="text" r={10} px={20} p={10}>
             <Text color="inverted" variant="subtitle">
               {signUp ? "Sign Up" : "Sign In"}
             </Text>

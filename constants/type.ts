@@ -154,31 +154,22 @@ export const createDiscordUserParser = z.object({
 
 export const userParser = z.object({
   _id: z.string(),
-  provider: z.array(z.enum(["google", "facebook", "email"])).optional(),
-
   username: z.string(),
-  name: z.string(),
+  images: z.array(z.string()),
+  //   age: z.number(),
+  birthdate: z.date(),
+  provider: z
+    .array(z.enum(["google", "facebook", "apple", "email"]))
+    .optional(),
 
   history: z.array(z.string()).optional(),
   fights: z.array(z.string()).optional(),
   opponents: z.array(z.string()),
-  profilePicture: z.string().optional(),
 
-  email: z.string(),
-  verified: z.boolean(),
-  createdAt: z.date().or(z.string()),
+  activities: z.array(z.string()),
+  interests: z.array(z.string()),
 
-  birthdate: z.string().optional(),
-
-  location: z
-    .object({
-      country: z.string(),
-      city: z.string(),
-    })
-    .optional(),
-
-  interests: z.array(z.string()).optional(),
-  bio: z.string().optional(),
+  locationHistory: z.array(z.string()),
 });
 
 export const chatParser = z.object({

@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "components/View";
 import { Text } from "components/Text";
 import { Link, router, useLocalSearchParams } from "expo-router";
-import { getChat, getChats, getFights, getOpponents } from "utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { JsonViewer } from "components/JsonViewer";
 import { SafeBottom, SafeTop } from "components/SafeTop";
