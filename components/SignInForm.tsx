@@ -7,6 +7,9 @@ import { Input } from "./Input";
 import { useColorScheme } from "react-native";
 import { router } from "expo-router";
 
+// prettier-ignore
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
 const SignInForm = ({
   onSignIn,
 }: {
@@ -14,15 +17,40 @@ const SignInForm = ({
 }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState(null);
   const [repeatPassword, setRepeatPassword] = React.useState("");
   const [signUp, setSignUp] = React.useState(false);
   const colorMode = useColorScheme();
 
   // const onSignIn = () => {};
-  const onSignUp = () => {};
+  const onSignUp = async () => {
+    console.log(email, password, repeatPassword);
+    console.log(!email.includes("@"));
+    if (emailRegex.test(email) === false) {
+      setError("Invalid email");
+    } else if (!password) {
+      setError("Password is required");
+    } else if (password != repeatPassword) {
+      setError("Passwords does not match");
+    } else if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+    } else {
+      setError(null);
+
+      const res = await axios;
+      // onSignIn(email, password);
+      // router.replace("/home");
+    }
+  };
   return (
     <>
       <View col bg={2} glass gap={15} r={20} p={10} m={5} my={10}>
+        {error ? (
+          <Text color="error" variant="subtitle">
+            {error}
+          </Text>
+        ) : null}
+
         <Input
           r={20}
           p={5}

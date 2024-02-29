@@ -2,12 +2,13 @@ import React from "react";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import { Canvas, Circle, Group } from "@shopify/react-native-skia";
 import { useUser } from "contexts/user.context";
-import { Button, Image, Pressable, SectionList } from "react-native";
+import { Image, Pressable, SectionList } from "react-native";
 import { useSession } from "contexts/auth.context";
 import { Text } from "components/Text";
 import { SafeTop } from "components/SafeTop";
 import { IconButton } from "components/IconButton";
 import { View } from "components/View";
+import { Button } from "components/Button";
 
 const DATA = [
   // {
@@ -46,27 +47,33 @@ const Settings = () => {
         sections={DATA}
         keyExtractor={(item, index) => item.name + index}
         renderItem={({ item }) => (
-          <View
-            row
-            p={15}
-            bg={3}
-            r={20}
-            style={{
-              alignItems: "center",
-              justifyContent: "flex-start",
-              alignSelf: "center",
-              gap: 10,
+          <Button
+            onPress={() => {
+              signOut();
             }}
           >
-            <IconButton
-              name={item.icon as any}
-              color={"red"}
-              onPress={() => {
-                signOut();
+            <View
+              row
+              p={15}
+              bg={3}
+              r={20}
+              style={{
+                alignItems: "center",
+                justifyContent: "flex-start",
+                alignSelf: "center",
+                gap: 10,
               }}
-            />
-            <Text>{item.name}</Text>
-          </View>
+            >
+              <IconButton
+                name={item.icon as any}
+                color={"red"}
+                onPress={() => {
+                  signOut();
+                }}
+              />
+              <Text>{item.name}</Text>
+            </View>
+          </Button>
         )}
         renderSectionHeader={({ section: { title } }) => <Text>{title}</Text>}
       />

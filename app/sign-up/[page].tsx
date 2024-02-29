@@ -13,7 +13,6 @@ import SignInForm from "components/SignInForm";
 //   GoogleSigninButton,
 //   statusCodes,
 // } from "@react-native-google-signin/google-signin";
-import { supabase } from "utils/supabase";
 
 export default function SignIn() {
   const { signIn, isLoading, session, signInWithEmail } = useSession();

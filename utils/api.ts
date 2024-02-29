@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const signUp = async (data) => {};
+
 export const getOpponents = async ({ queryKey }) => {
   if (queryKey[1] == "all") {
     const res = await axios.get("https://api.fightder.com");

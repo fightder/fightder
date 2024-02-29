@@ -107,7 +107,7 @@ export const textColorTheme = {
       color: COLORS.secondary[500],
     },
     error: {
-      color: COLORS.error[900],
+      color: COLORS.error[600],
     },
     success: {
       color: COLORS.secondary[300],
