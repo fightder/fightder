@@ -9,6 +9,7 @@ export const Button = ({
   href,
   mx,
   children,
+  disabled,
   ...props
 }: {
   onPress?: () => void;
@@ -19,17 +20,20 @@ export const Button = ({
   return (
     <MotiPressable
       onPress={
-        href
-          ? () => {
-              router.push(href);
-            }
-          : onPress
+        !disabled
+          ? href
+            ? () => {
+                router.push(href);
+              }
+            : onPress
+          : undefined
       }
       style={{
         // padding: 10,
         // borderRadius: 10,
         // backgroundColor: mode == "dark" ? "#fff" : "#000",
         marginHorizontal: mx || 0,
+        opacity: disabled ? 0.5 : 1,
       }}
       animate={useMemo(
         () =>

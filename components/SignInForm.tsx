@@ -12,6 +12,7 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 
 const SignInForm = ({
   onSignIn,
+  onNext,
 }: {
   onSignIn: (email: string, password: string) => void;
 }) => {
@@ -37,7 +38,7 @@ const SignInForm = ({
     } else {
       setError(null);
 
-      const res = await axios;
+      // const res = await axios;
       // onSignIn(email, password);
       // router.replace("/home");
     }

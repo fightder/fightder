@@ -34,7 +34,7 @@ export const View = ({
   flex?: boolean;
   center?: boolean;
   bg?: 1 | 2 | 3 | 4;
-  variant?: "primary" | "secondary" | "text";
+  variant?: "primary" | "secondary" | "text" | "muted";
   color?: string;
   glass?: boolean;
   z?: number;
@@ -104,6 +104,9 @@ const backgrounds = {
     secondary: {
       backgroundColor: COLORS.secondary[700],
     },
+    muted: {
+      backgroundColor: COLORS.background[600],
+    },
     text: {
       backgroundColor: COLORS.background[100],
     },
@@ -126,6 +129,9 @@ const backgrounds = {
     },
     secondary: {
       backgroundColor: COLORS.secondary[300],
+    },
+    muted: {
+      backgroundColor: COLORS.background[400],
     },
     text: {
       backgroundColor: COLORS.background[900],

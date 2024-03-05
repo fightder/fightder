@@ -50,7 +50,7 @@ export default function AppLayout() {
   }
 
   if (!session) {
-    return <Redirect href="/sign-in" />;
+    return <Redirect href="/auth" />;
   }
 
   // This layout can be deferred because it's not the root layout.
@@ -86,7 +86,8 @@ export default function AppLayout() {
             ]}
           />
         ),
-        tabBarActiveTintColor: "#7b93ec",
+        tabBarActiveTintColor:
+          mode === "dark" ? COLORS["primary"][500] : COLORS["primary"][500],
       }}
       initialRouteName="home"
     >

@@ -7,8 +7,9 @@ import { Text } from "./Text";
 export function SafeTop({
   back,
   title,
+  logo,
   ...props
-}: { back?: boolean; title?: string } & ViewProps) {
+}: { back?: boolean; logo?: boolean; title?: string } & ViewProps) {
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -56,6 +57,24 @@ export function SafeTop({
           variant="header"
         >
           {title}
+        </Text>
+      )}
+      {logo && (
+        <Text
+          // style={{ top: insets.top, left: 60, overflow: "visible" }}
+          style={{
+            position: "absolute",
+            margin: "auto",
+            display: "flex",
+            // alignItems: "center",
+            // justifyContent: "center",
+            width: "100%",
+            // backgroundColor: "red",
+            textAlign: "center",
+          }}
+          variant="header"
+        >
+          🔥Fightder
         </Text>
       )}
     </View>

@@ -1,5 +1,5 @@
 import { useSession } from "contexts/auth.context";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import * as Linking from "expo-linking";
 import { useEffect, useState } from "react";
 import { View } from "components/View";
@@ -54,19 +54,45 @@ export default function SignIn() {
           justifyContent: "flex-end",
         }}
       />
-      <SignInForm onSignIn={signInWithEmail} />
-      {/* <Button
-        onPress={async () => {
-          await signIn();
-          router.replace("/home");
-        }}
-      >
-        <View variant="text" r={5} px={20} p={10}>
-          <Text color="inverted" variant="subtitle">
-            Sign In with Fync
+      {/* <SignInForm onSignIn={signInWithEmail} /> */}
+      <Link href="/sign-up/1">
+        <View
+          variant="primary"
+          r={10}
+          px={20}
+          p={10}
+          style={{ width: 250 }}
+          center
+        >
+          <Text color="inverted" variant="title">
+            Create account
           </Text>
         </View>
-      </Button> */}
+      </Link>
+      <Button
+        onPress={async () => {
+          // await signIn();
+        }}
+      >
+        <View
+          variant="text"
+          r={10}
+          px={20}
+          p={10}
+          my={20}
+          style={{ width: 250 }}
+          center
+        >
+          <Text color="inverted" variant="title">
+            Sign In
+          </Text>
+        </View>
+      </Button>
+      <View m={30}>
+        <Text>
+          Say something very important here. This is a very important message.
+        </Text>
+      </View>
       <SafeBottom />
       <View style={{ flex: 0.2 }} />
     </View>
