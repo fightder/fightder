@@ -8,11 +8,7 @@ import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Image, KeyboardAvoidingView } from "react-native";
 import SignInForm from "components/SignInForm";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-//   statusCodes,
-// } from "@react-native-google-signin/google-signin";
+import * as ImagePicker from "expo-image-picker";
 import { supabase } from "utils/supabase";
 import { Input } from "components/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -29,6 +25,21 @@ export default function Images() {
     // []
   );
   const [canNext, setCanNext] = useState(false);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   useEffect(() => {
     console.log(storage.getString("images"), "tmgs");
@@ -54,18 +65,20 @@ export default function Images() {
             <Text variant="header">Images</Text>
           </View>
           {[1, 2, 3].map((i) => (
-            <View key={i} m={0} gap={10}>
-              <Text variant="header">Image {i}</Text>
-              <Input
-                placeholder="https://example.com/image.jpg"
-                value={images[i - 1]}
-                onChangeText={(text) => {
-                  const newImages = [...images];
-                  newImages[i - 1] = text;
-                  setImages(newImages);
-                }}
-              />
-            </View>
+            <Button key={i} onPress={() => {}}>
+              <View key={i} m={0} gap={10}>
+                <Text variant="header">Image {i}</Text>
+                <Input
+                  placeholder="https://example.com/image.jpg"
+                  value={images[i - 1]}
+                  onChangeText={(text) => {
+                    const newImages = [...images];
+                    newImages[i - 1] = text;
+                    setImages(newImages);
+                  }}
+                />
+              </View>
+            </Button>
           ))}
         </View>
         <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>

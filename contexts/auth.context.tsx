@@ -6,6 +6,7 @@ import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
 import { User } from "constants/type";
 import { set } from "zod";
+import { storage } from "utils/storage";
 
 const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
@@ -94,6 +95,10 @@ export function SessionProvider(props: React.PropsWithChildren) {
       console.log(e);
     }
   };
+
+  const signOut = () => {
+    storage.delete;
+  };
   const signInWithEmail = async (email: string, password: string) => {
     setSession("hi");
   };
@@ -101,9 +106,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
     <AuthContext.Provider
       value={{
         signIn,
-        signOut: () => {
-          setSession(null);
-        },
+        signOut,
         session,
         signInWithEmail,
         getFyncUserById: async (id: string) => {

@@ -53,6 +53,12 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to find users based on your location."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to people find you based on your photos."
+        }
       ]
     ],
     "extra": {
