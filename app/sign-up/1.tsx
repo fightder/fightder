@@ -23,16 +23,20 @@ import { storage } from "utils/storage";
 export default function BirthDate() {
   const { signIn, isLoading, session, signInWithEmail } = useSession();
   const [date, setDate] = useState(
-    new Date(storage.getString("birthdate")) || new Date()
+    storage.getString("birthdate")
+      ? new Date(storage.getString("birthdate"))
+      : new Date()
   );
   const [canNext, setCanNext] = useState(false);
 
   useEffect(() => {
     console.log(session, isLoading);
+    console.log(new Date(storage.getString("birthdate")), new Date(), "bdd");
   }, [session, isLoading]);
 
   useEffect(() => {
     const now = new Date();
+    console.log(date);
     console.log(date.toDateString(), now.toLocaleDateString());
     setCanNext(date.toLocaleDateString() != now.toLocaleDateString());
   }, [date]);

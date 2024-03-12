@@ -7,17 +7,6 @@ import { Text } from "components/Text";
 import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Image, KeyboardAvoidingView } from "react-native";
-import SignInForm from "components/SignInForm";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-//   statusCodes,
-// } from "@react-native-google-signin/google-signin";
-import { supabase } from "utils/supabase";
-import { Input } from "components/Input";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MotiView } from "moti";
-import { IconButton } from "components/IconButton";
 import { storage } from "utils/storage";
 import DropDownPicker from "react-native-dropdown-picker";
 import { COLORS } from "constants/colors";
@@ -27,7 +16,9 @@ export default function Activities() {
   const [open, setOpen] = useState(false);
 
   const [activities, setActivities] = useState(
-    JSON.parse(storage.getString("activities")) || []
+    storage.getString("activities")
+      ? JSON.parse(storage.getString("activities"))
+      : []
   );
   const [canNext, setCanNext] = useState(false);
 

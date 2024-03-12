@@ -7,6 +7,13 @@ import axios from "axios";
 import { User } from "constants/type";
 import { set } from "zod";
 import { storage } from "utils/storage";
+import { createMongoDBDataAPI } from "mongodb-data-api";
+
+// or init by app ID
+export const dataAPI = createMongoDBDataAPI({
+  apiKey: process.env.EXPO_PUBLIC_MONGO_API_KEY,
+  appId: process.env.EXPO_PUBLIC_MONGO_APP_ID,
+});
 
 const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
@@ -67,10 +74,6 @@ function exchangeCodeForToken(authorizationCode) {
 export function SessionProvider(props: React.PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
 
-  useEffect(() => {
-    setSession("hi");
-  }, []);
-
   const signIn = async () => {
     const authUrl = process.env.EXPO_PUBLIC_FYNC_AUTH_URL;
     const res = await WebBrowser.openAuthSessionAsync(authUrl);
@@ -97,7 +100,8 @@ export function SessionProvider(props: React.PropsWithChildren) {
   };
 
   const signOut = () => {
-    storage.delete;
+    storage.clearAll();
+    setSession(null);
   };
   const signInWithEmail = async (email: string, password: string) => {
     setSession("hi");

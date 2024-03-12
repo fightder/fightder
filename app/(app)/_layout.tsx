@@ -16,6 +16,7 @@ export const unstable_settings = {
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
+  console.log(session, "SESS");
   const mode = useColorScheme();
   const insets = useSafeAreaInsets();
 

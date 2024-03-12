@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Canvas, Circle, Group } from "@shopify/react-native-skia";
 import { useUser } from "contexts/user.context";
 import { Button, Image, Pressable } from "react-native";
-import { useSession } from "contexts/auth.context";
+import { dataAPI, useSession } from "contexts/auth.context";
 import { Text } from "components/Text";
 import { SafeTop } from "components/SafeTop";
 import { IconButton } from "components/IconButton";
@@ -74,6 +74,22 @@ const App = () => {
           </Group>
         </Canvas> */}
         </View>
+        <Button
+          title="get"
+          onPress={() => {
+            dataAPI
+              .find({
+                dataSource: "users",
+                database: "dev",
+              })
+              .then((res) => {
+                console.log(res, "shit");
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          }}
+        />
       </ScrollView>
     </View>
   );

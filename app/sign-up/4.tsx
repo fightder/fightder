@@ -21,14 +21,16 @@ export default function Images() {
   const { signIn, isLoading, session } = useSession();
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState(
-    JSON.parse(storage.getString("images") || "[]") || []
-    // []
+    storage.getString("images")
+      ? JSON.parse(storage.getString("images"))
+      : ["", "", "", "", "", ""]
   );
   const [canNext, setCanNext] = useState(false);
-  const pickImage = async () => {
+
+  const pickImage = (i: number) => async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -36,14 +38,21 @@ export default function Images() {
 
     console.log(result);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (result.assets) {
+      // setImage(result.assets[0].uri);
+      setImages([
+        ...images.slice(0, i),
+        result.assets[0].uri,
+        ...images.slice(i + 1),
+      ]);
     }
   };
 
   useEffect(() => {
     console.log(storage.getString("images"), "tmgs");
-    if (images.length >= 3) {
+    const imagescount = images.filter((i) => i !== "").length;
+    if (imagescount >= 3) {
+      storage.set("images", JSON.stringify(images));
       setCanNext(true);
     }
   }, [images]);
@@ -53,33 +62,38 @@ export default function Images() {
 
     storage.set("images", JSON.stringify(images));
 
-    router.push("/sign-up/5");
+    router.push("/sign-up/finish");
   };
 
   return (
     <View flex bg={1}>
       <SafeTop back logo />
       <KeyboardAvoidingView style={{ flex: 1 }}>
-        <View flex style={{ paddingHorizontal: 20 }}>
-          <View m={30} gap={5}>
+        <View flex style={{ paddingHorizontal: 10, gap: 10 }}>
+          <View m={30} gap={10}>
             <Text variant="header">Images</Text>
           </View>
-          {[1, 2, 3].map((i) => (
-            <Button key={i} onPress={() => {}}>
-              <View key={i} m={0} gap={10}>
-                <Text variant="header">Image {i}</Text>
-                <Input
-                  placeholder="https://example.com/image.jpg"
-                  value={images[i - 1]}
-                  onChangeText={(text) => {
-                    const newImages = [...images];
-                    newImages[i - 1] = text;
-                    setImages(newImages);
-                  }}
+          <View row gap={10} center>
+            {images.slice(0, 3).map((image, index) => (
+              <ImagePickerButton
+                index={index}
+                onPress={pickImage(index)}
+                image={image}
+              />
+            ))}
+          </View>
+          <View row gap={10} center>
+            {images.slice(3, 6).map((image, index) => {
+              index += 3;
+              return (
+                <ImagePickerButton
+                  index={index}
+                  onPress={pickImage(index)}
+                  image={image}
                 />
-              </View>
-            </Button>
-          ))}
+              );
+            })}
+          </View>
         </View>
         <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
           <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
@@ -91,3 +105,28 @@ export default function Images() {
     </View>
   );
 }
+
+export const ImagePickerButton = ({ onPress, image, index }) => {
+  return (
+    <Button key={index + "ipb"} onPress={onPress}>
+      {image ? (
+        <Image
+          source={{ uri: image }}
+          style={{ width: 110, height: 170, margin: 5, borderRadius: 10 }}
+        />
+      ) : (
+        <View
+          key={index}
+          m={5}
+          bg={4}
+          gap={10}
+          r={10}
+          style={{ width: 110, height: 170 }}
+          center
+        >
+          <IconButton name="add" />
+        </View>
+      )}
+    </Button>
+  );
+};

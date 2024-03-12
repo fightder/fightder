@@ -23,7 +23,8 @@ const {
   __metadata__: outfitMetadata,
   ...Outfits
 } = outfit;
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { initb2 } from "utils/storage";
 // import NetInfo from "@react-native-community/netinfo";
 
 // onlineManager.setEventListener((setOnline) => {
@@ -32,8 +33,8 @@ import { useCallback } from "react";
 //   });
 // });
 // SplashScreen.preventAutoHideAsync();
-
 console.log("this running");
+initb2();
 export default function Root() {
   let [SpaceGroteskLoaded] = useFonts({
     SpaceGrotesk_300Light,
@@ -43,7 +44,6 @@ export default function Root() {
     SpaceGrotesk_700Bold,
     Outfits,
   });
-
   let [outfitLoaded] = useOutfitFonts(Outfits);
   const queryClient = new QueryClient();
 

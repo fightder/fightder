@@ -162,16 +162,16 @@ export function UserProvider(props: React.PropsWithChildren) {
         !jsonUser.includes("_id")
       ) {
         console.log("fetching user");
-        setUser({
-          _id: "0",
-          email: "b@gg.gg",
-          name: "B",
-          profilePicture:
-            "https://cdn.discordapp.com/attachments/1143923878696075415/1202256650564816966/IMG_3188.jpg?ex=65e87b42&is=65d60642&hm=defe8ad7dd300af37cc700d9513ef8cd2359269b2c9daabab2061ed710fa529c&",
-          bio: "I am a cool person",
-        });
+        // setUser({
+        //   _id: "0",
+        //   email: "b@gg.gg",
+        //   name: "B",
+        //   profilePicture:
+        //     "https://cdn.discordapp.com/attachments/1143923878696075415/1202256650564816966/IMG_3188.jpg?ex=65e87b42&is=65d60642&hm=defe8ad7dd300af37cc700d9513ef8cd2359269b2c9daabab2061ed710fa529c&",
+        //   bio: "I am a cool person",
+        // });
 
-        storage.set("user", JSON.stringify(user));
+        // storage.set("user", JSON.stringify(user));
         return;
       }
       const userObject = JSON.parse(jsonUser);

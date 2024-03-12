@@ -52,68 +52,6 @@ const HttpsUrlSchema = z.custom((value) => {
   }
 });
 
-export type Friendship = z.infer<typeof friendshipParser>;
-
-export const friendshipParser = z.object({
-  _id: z.string(),
-  adder: z.string(),
-  accepter: z.string(),
-  removed: z.boolean().optional(),
-
-  friendship: z.number(),
-
-  images: z.array(z.string()),
-  videos: z.array(z.string()),
-
-  // sameApps: z.array(
-  createdAt: z.date().or(z.string()),
-});
-
-export const appParser = z.object({
-  _id: z.string(),
-  name: z.string(),
-  description: z.string(),
-
-  clientId: z.string(),
-  clientSecret: z.string(),
-  discordClientId: z.string().optional(),
-  discordClientSecret: z.string().optional(),
-  discordRedirectUri: z.string().optional(),
-  discordScopes: z.array(z.string()).optional(),
-
-  appStoreId: z.string().optional(),
-  androidPackageName: z.string().optional(),
-  url: z
-    .string()
-    .regex(/^(http:\/\/|https:\/\/)[^\s/$.?#].[^\s]*$/)
-    .optional(),
-
-  redirects: z.array(z.string().url()).optional(),
-
-  image: z.string().optional(),
-  users: z.array(z.string()),
-  events: z.array(z.string()),
-  interactions: z.array(z.string()),
-
-  createdAt: z.date().or(z.string()),
-});
-
-export const appUserParser = z.object({
-  _id: z.string(),
-  app: z.string(),
-
-  fyncId: z.string(),
-  appUserId: z.string(),
-  friends: z.array(z.string()),
-
-  appInteraction: z.object({
-    friendshipCount: z.number(),
-    eventCount: z.number(),
-    lastInteraction: z.date(),
-  }),
-  createdAt: z.date().or(z.string()),
-});
-
 export const createEmailUserParser = z.object({
   email: z.string(),
   password: z.string(),
