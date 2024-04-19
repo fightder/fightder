@@ -12,7 +12,7 @@ const Home = () => {
   const r = width * 0.33;
   useEffect(() => {
     router.push("/home");
-  });
+  }, []);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeTop />

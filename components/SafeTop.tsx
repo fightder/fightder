@@ -20,6 +20,7 @@ export function SafeTop({
           flexDirection: "row",
           marginTop: insets.top,
           backgroundColor: "transparent",
+          justifyContent: "space-between",
           // overflow: "visible",
         },
         props.style,
@@ -29,6 +30,7 @@ export function SafeTop({
       {back && (
         <View
           style={{
+            zIndex: 100,
             // overflow: "visible",
             // position: "absolute",
             // top: insets.top,
@@ -45,6 +47,7 @@ export function SafeTop({
           <IconButton
             name="arrow-back"
             onPress={() => {
+              console.log("back");
               router.back();
             }}
           />

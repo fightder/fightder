@@ -20,46 +20,59 @@ import { MotiView } from "moti";
 import { IconButton } from "components/IconButton";
 import { storage } from "utils/storage";
 
-export default function Email() {
+export default function BirthDate() {
   const { signIn, isLoading, session, signInWithEmail } = useSession();
-  const [email, setEmail] = useState(storage.getString("email") || "");
+  const [date, setDate] = useState(
+    storage.getString("birthdate")
+      ? new Date(storage.getString("birthdate"))
+      : new Date()
+  );
   const [canNext, setCanNext] = useState(false);
 
   useEffect(() => {
     console.log(session, isLoading);
+    console.log(new Date(storage.getString("birthdate")), new Date(), "bdd");
   }, [session, isLoading]);
 
   useEffect(() => {
-    const validated = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-    setCanNext(validated);
-  }, [email]);
+    const now = new Date();
+    console.log(date);
+    console.log(date.toDateString(), now.toLocaleDateString());
+    setCanNext(date.toLocaleDateString() != now.toLocaleDateString());
+  }, [date]);
 
   const onNext = () => {
     // check if date is valid
-    console.log(email, email.trim());
-    if (email) {
-      storage.set("email", email.trim());
+    const now = new Date();
+    const age = now.getFullYear() - date.getFullYear();
 
-      router.push("/sign-up/3");
+    if (age < 18) {
+      // check if user is over 18
+      router.push("/sign-up/1");
     }
+
+    storage.set("birthdate", date.toDateString());
+
+    router.push("/sign-up/2");
   };
 
   return (
     <View flex bg={1}>
       <SafeTop back logo />
       <KeyboardAvoidingView style={{ flex: 1 }}>
-        {/* </Link> */}
         <View flex style={{ paddingHorizontal: 20 }}>
           <View m={30} gap={5}>
-            <Text variant="header">Please Enter your Email</Text>
-            <Input
-              value={email}
-              onChangeText={(t) => setEmail(t)}
-              placeholder="Email"
-              bg={3}
-              p={5}
-              variant="subtitle"
+            <Text variant="header">When is your birthdate?</Text>
+            <DateTimePicker
+              value={date}
+              // display="compact"
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate || date;
+                setDate(currentDate);
+              }}
+              mode="date"
+              maximumDate={new Date()}
+              minimumDate={new Date(1900, 1, 1)}
             />
           </View>
         </View>

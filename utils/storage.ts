@@ -2,25 +2,11 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { MMKV } from "react-native-mmkv";
 import { encode } from "base-64";
 import * as Crypto from "expo-crypto";
+import { getArrayBufferForBlob } from "react-native-blob-jsi-helper";
 
 export const storage = new MMKV();
-// export const s3 = new S3Client({
-//   endpoint: "https://s3.us-east-005.backblazeb2.com",
-//   region: "us-east-005",
-//   credentials: {
-//     accessKeyId: "0058f98d43dc9e80000000007",
-//     secretAccessKey: "K005hP+UwkD/F+wPROUg19dWxD0tWl0",
-//   },
-// });
-// // s3.config.credentials = {
-// //   accessKeyId: "0058f98d43dc9e80000000007",
-// //   secretAccessKey: "K005hP+UwkD/F+wPROUg19dWxD0tWl0",
-// // };
-
 let inited = false;
-let b2_up;
-let b2_token;
-let b2_down;
+
 export const initb2 = async () => {
   const id_and_key =
     process.env.EXPO_PUBLIC_B2_KEY_ID +
@@ -41,7 +27,7 @@ export const initb2 = async () => {
 
   const b2_auth_json = await b2_auth_response.json();
 
-  console.log(b2_auth_json);
+  console.log(b2_auth_json, "auth json");
 
   const b2_api_url = b2_auth_json.apiUrl;
   const b2_download_url = b2_auth_json.downloadUrl;
@@ -105,35 +91,29 @@ const getCredentials = async () => {
     b2_download_url: down,
   };
 };
-export const UploadFile = async (file: File, name?: string) => {
+export const UploadFile = async (file: Blob, name?: string, type?: string) => {
   const { b2_upload_url, b2_upload_auth_token, b2_download_url } =
-    await getCredentials();
-  // return "locally developing";
-  // const sha1 = await crypto.subtle
-  //   .digest("SHA-1", await file.arrayBuffer())
-  //   .then((hash) =>
-  //     Array.from(new Uint8Array(hash))
-  //       .map((b) => b.toString(16).padStart(2, "0"))
-  //       .join("")
-  //   );
-  const shaab = await Crypto.digest(
-    Crypto.CryptoDigestAlgorithm.SHA1,
-    await file.arrayBuffer()
-  );
+    await initb2();
+  // await getCredentials();
+  const ab = getArrayBufferForBlob(file);
 
-  const sha1 = String.fromCharCode.apply(null, new Uint16Array(shaab));
+  const shaab = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA1, ab);
+  const sha1 = [...new Uint8Array(shaab)]
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("");
+  const extension = type.split("/")[1];
+
+  console.log(sha1, "sha1");
 
   const b2_upload_headers = new Headers();
   b2_upload_headers.append("Authorization", b2_upload_auth_token);
   b2_upload_headers.append(
     "X-Bz-File-Name",
-    encodeURIComponent(
-      (name || file.name) + Date.now() + "." + file.type.split("/")[1]
-    )
+    encodeURIComponent(name + Date.now() + "." + extension)
   );
 
   b2_upload_headers.append("X-Bz-Content-Sha1", sha1);
-  b2_upload_headers.append("Content-Type", file.type);
+  b2_upload_headers.append("Content-Type", type);
   b2_upload_headers.append("Content-Length", file.size.toString());
 
   const b2_upload_response = await fetch(b2_upload_url, {
@@ -144,13 +124,13 @@ export const UploadFile = async (file: File, name?: string) => {
 
   const b2_upload_json = await b2_upload_response.json();
 
-  console.log(b2_upload_json);
+  console.log(b2_upload_json, "upload res");
   const url =
     b2_download_url +
     "/file/" +
     encodeURIComponent("fightder" + "/" + b2_upload_json.fileName);
 
-  console.log(url);
+  console.log(url, "urll");
 
   return url;
 };

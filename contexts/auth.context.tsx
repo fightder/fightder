@@ -19,6 +19,13 @@ const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
   signOut: () => void;
   signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    email: string,
+    birthdate: string,
+    activities: string[],
+    images: string[],
+    username: string
+  ) => Promise<void>;
   getFyncUserById: (id: string) => Promise<User | null>;
   session?: string | null;
   isLoading: boolean;
@@ -26,6 +33,7 @@ const AuthContext = React.createContext<{
   signIn: () => null,
   signOut: () => null,
   signInWithEmail: () => null,
+  signUpWithEmail: () => null,
   getFyncUserById: () => null,
   session: null,
   isLoading: false,
@@ -104,7 +112,61 @@ export function SessionProvider(props: React.PropsWithChildren) {
     setSession(null);
   };
   const signInWithEmail = async (email: string, password: string) => {
-    setSession("hi");
+    const res = await dataAPI.findOne({
+      dataSource: "dev",
+      database: "fightder_dev",
+      collection: "users",
+      filter: {
+        email,
+        password,
+      },
+    });
+
+    const user = res.document;
+
+    const session = user._id; // temp session with _id of user
+
+    setSession(session);
+  };
+
+  const signUpWithEmail = async (
+    email: string,
+    birthdate: string,
+    activities: string[],
+    images: string[],
+    username: string
+  ) => {
+    // check if user exists by email or username
+    const userExists = await dataAPI.findOne({
+      dataSource: "dev",
+      database: "fightder_dev",
+      collection: "users",
+      filter: {
+        $or: [{ email }],
+      },
+    });
+
+    if (userExists) {
+      console.log("user exists");
+      return;
+    } else {
+      const newUser = await dataAPI.insertOne({
+        dataSource: "dev",
+        database: "fightder_dev",
+        collection: "users",
+        document: {
+          email,
+          birthdate,
+          activities,
+          images,
+          username,
+        },
+      });
+      console.log(newUser.insertedId, "insertedId");
+      setSession(newUser.insertedId);
+
+      return newUser.insertedId;
+    }
   };
   return (
     <AuthContext.Provider
@@ -113,6 +175,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
         signOut,
         session,
         signInWithEmail,
+        signUpWithEmail,
         getFyncUserById: async (id: string) => {
           console.log(session, id, "ssidd");
           try {

@@ -8,6 +8,7 @@ import { BlurView } from "expo-blur";
 import { SHADOW } from "constants/shadow";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "constants/colors";
+import { useEffect } from "react";
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
@@ -15,7 +16,13 @@ export const unstable_settings = {
 };
 
 export default function AppLayout() {
-  const { session, isLoading } = useSession();
+  const { session, isLoading, signOut } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      signOut();
+    }
+  }, [session]);
   console.log(session, "SESS");
   const mode = useColorScheme();
   const insets = useSafeAreaInsets();

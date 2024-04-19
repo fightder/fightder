@@ -71,8 +71,13 @@ export default function Activities() {
             style={{ borderRadius: 25 }}
             listMode="MODAL"
             badgeDotColors={["#345", "#af0", "#93b", "#2fa", "#a9a"]}
-            modalContentContainerStyle={{
+            modalAnimationType="slide"
+            searchTextInputStyle={{
               borderRadius: 25,
+              paddingVertical: 10,
+            }}
+            modalContentContainerStyle={{
+              // borderRadius: 25,
               backgroundColor: COLORS.background[800],
             }}
           />

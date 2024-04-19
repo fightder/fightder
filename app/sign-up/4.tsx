@@ -48,6 +48,10 @@ export default function Images() {
     }
   };
 
+  const onRemove = (i: number) => () => {
+    setImages([...images.slice(0, i), "", ...images.slice(i + 1)]);
+  };
+
   useEffect(() => {
     console.log(storage.getString("images"), "tmgs");
     const imagescount = images.filter((i) => i !== "").length;
@@ -72,23 +76,26 @@ export default function Images() {
         <View flex style={{ paddingHorizontal: 10, gap: 10 }}>
           <View m={30} gap={10}>
             <Text variant="header">Images</Text>
+            <Text variant="subtitle">Pick atleast 3 images</Text>
           </View>
-          <View row gap={10} center>
+          <View row gap={5} center>
             {images.slice(0, 3).map((image, index) => (
               <ImagePickerButton
                 index={index}
                 onPress={pickImage(index)}
+                onRemove={onRemove(index)}
                 image={image}
               />
             ))}
           </View>
-          <View row gap={10} center>
+          <View row gap={5} center>
             {images.slice(3, 6).map((image, index) => {
               index += 3;
               return (
                 <ImagePickerButton
                   index={index}
                   onPress={pickImage(index)}
+                  onRemove={onRemove(index)}
                   image={image}
                 />
               );
@@ -106,27 +113,48 @@ export default function Images() {
   );
 }
 
-export const ImagePickerButton = ({ onPress, image, index }) => {
+export const ImagePickerButton = ({ onPress, onRemove, image, index }) => {
   return (
-    <Button key={index + "ipb"} onPress={onPress}>
-      {image ? (
-        <Image
-          source={{ uri: image }}
-          style={{ width: 110, height: 170, margin: 5, borderRadius: 10 }}
-        />
-      ) : (
-        <View
-          key={index}
-          m={5}
-          bg={4}
-          gap={10}
-          r={10}
-          style={{ width: 110, height: 170 }}
-          center
-        >
-          <IconButton name="add" />
-        </View>
-      )}
-    </Button>
+    <>
+      <Button key={index + "ipb"} onPress={onPress}>
+        {image ? (
+          <>
+            <IconButton
+              name="close"
+              onPress={onRemove}
+              variant="circle"
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                zIndex: 2000,
+              }}
+            />
+            <Image
+              source={{ uri: image }}
+              style={{
+                width: 110,
+                height: 170,
+                margin: 5,
+                borderRadius: 10,
+                zIndex: -21,
+              }}
+            />
+          </>
+        ) : (
+          <View
+            key={index}
+            m={5}
+            bg={4}
+            gap={10}
+            r={10}
+            style={{ width: 110, height: 170 }}
+            center
+          >
+            <IconButton name="add" variant="circle" />
+          </View>
+        )}
+      </Button>
+    </>
   );
 };

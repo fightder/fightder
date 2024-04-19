@@ -9,12 +9,15 @@ export const IconButton = ({
   name,
   href,
   dynamicTypeRamp,
+  variant,
   ...props
 }: {
   onPress?: () => void;
   name: keyof typeof Ionicons.glyphMap;
   href?: string;
-} & React.ComponentProps<typeof Ionicons>) => {
+  variant?: "circle" | "default";
+} & React.ComponentProps<typeof Ionicons> &
+  React.ComponentProps<typeof MotiPressable>) => {
   const mode = useColorScheme();
   return (
     <MotiPressable
@@ -25,6 +28,21 @@ export const IconButton = ({
             }
           : onPress
       }
+      style={[
+        {
+          borderRadius: variant == "circle" ? 100 : 10,
+          alignItems: "center",
+          alignSelf: "center",
+          justifyContent: "center",
+          backgroundColor:
+            variant == "circle"
+              ? mode == "dark"
+                ? "white"
+                : "black"
+              : "transparent",
+        },
+        props.style,
+      ]}
       animate={useMemo(
         () =>
           ({ hovered, pressed }) => {
@@ -51,8 +69,19 @@ export const IconButton = ({
       <Ionicons
         name={name}
         size={24}
-        color={mode == "dark" ? "white" : "black"}
-        {...props}
+        style={{
+          alignSelf: "center",
+        }}
+        color={
+          variant == "circle"
+            ? mode == "dark"
+              ? "black"
+              : "white"
+            : mode == "dark"
+              ? "white"
+              : "black"
+        }
+        // {...props}
       />
     </MotiPressable>
   );

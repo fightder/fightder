@@ -1,22 +1,13 @@
 import { dataAPI, useSession } from "contexts/auth.context";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 
-import { Link, router, useGlobalSearchParams } from "expo-router";
-import * as Linking from "expo-linking";
 import { useEffect, useState } from "react";
 import { View } from "components/View";
 import { Text } from "components/Text";
 import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
-import { Image, KeyboardAvoidingView } from "react-native";
-import SignInForm from "components/SignInForm";
-import * as ImagePicker from "expo-image-picker";
-import { supabase } from "utils/supabase";
+import { Image, KeyboardAvoidingView, LogBox } from "react-native";
 import { Input } from "components/Input";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MotiView } from "moti";
-import { IconButton } from "components/IconButton";
 import { UploadFile, storage } from "utils/storage";
 // import {
 //   S3Client,
@@ -26,8 +17,7 @@ import { UploadFile, storage } from "utils/storage";
 // } from "@aws-sdk/client-s3";
 
 export default function Finish() {
-  const { signIn, isLoading, session } = useSession();
-  const [open, setOpen] = useState(false);
+  const { signIn, isLoading, signUpWithEmail } = useSession();
   const [username, setUsername] = useState("");
   const [canNext, setCanNext] = useState(false);
   const images: string[] = JSON.parse(storage.getString("images"));
@@ -35,21 +25,6 @@ export default function Finish() {
   const birthdate = storage.getString("birthdate");
   const activities = JSON.parse(storage.getString("activities"));
 
-  //   useEffect(() => {
-  //     console.log(images, email, birthdate, activities, "finish");
-
-  //     dataAPI.insertOne({
-  //       dataSource: "dev",
-  //       database: "fightder",
-  //       collection: "users",
-  //       document: {
-  //         email,
-  //         birthdate,
-  //         activities,
-  //         images,
-  //       },
-  //     });
-  //   }, []);
   useEffect(() => {
     if (username) {
       storage.set("username", username);
@@ -59,60 +34,49 @@ export default function Finish() {
 
   const onNext = async () => {
     // check if date is valid
-    if (!canNext) return;
+    console.log(username, images, email, birthdate, activities, "datanext");
+    if (!canNext) {
+      console.log("cant next");
+      return;
+    }
 
     storage.set("username", username);
 
-    // s3.send(new ListBucketsCommand({}))
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
-
-    // s3.send(
-    //   new CreateBucketCommand({
-    //     Bucket: "fightder",
-    //   })
-    // )
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
-
     const imagesUrls = Array(images.length).fill("");
     try {
-      images.forEach(async (image, i) => {
-        console.log(image, i);
-        if (image) {
+      await Promise.all(
+        images.map(async (image, i) => {
+          console.log(image, i);
           const blob = await fileURLtoBlob(image);
-          console.log(blob, "blob");
-          // const res = await s3.send(
-          //   new PutObjectCommand({
-          //     Bucket: "fightder",
-          //     Key: username + "pfp" + Date.now() + ".png",
-          //     Body: blob,
-          //   })
-          // );
-          const res = await UploadFile(
-            new File([blob], "pfp"),
-            username + "pfp" + Date.now()
-          );
-          console.log(res);
-          imagesUrls[i] =
-            "https://fightder.s3.us-east-005.backblazeb2.com/" +
-            username +
-            "pfp" +
-            Date.now() +
-            ".png";
-        }
-      });
+          console.log(blob.arrayBuffer, "ab");
+          if (blob) {
+            const res = await UploadFile(
+              blob,
+              username + "pfp" + Date.now(),
+              blob.type
+            );
+            console.log(res);
+            imagesUrls[i] = res;
+          }
+        })
+      );
+
+      // After all URLs are collected, print them
+      console.log(imagesUrls);
+
+      const res = await signUpWithEmail(
+        email,
+        birthdate,
+        activities,
+        imagesUrls,
+        username
+      );
+
+      console.log(res);
     } catch (e) {
       console.log(e);
     }
+
     // storage.set("images", JSON.stringify(images));
   };
 
@@ -126,7 +90,7 @@ export default function Finish() {
           </View>
 
           <View m={30} gap={5}>
-            <Text variant="header">Please Enter your username</Text>
+            <Text variant="title">Please Enter your username</Text>
             <Input
               value={username}
               onChangeText={(t) => setUsername(t)}
@@ -156,5 +120,14 @@ export default function Finish() {
 async function fileURLtoBlob(url: string) {
   const response = await fetch(url);
   const data = await response.blob();
+
+  console.log(data, "response.body");
+  return data;
+}
+
+async function fileURLtoArrayBuffer(url: string) {
+  const response = await fetch(url);
+  // console.log(response.type, "response.type");
+  const data = await response.arrayBuffer();
   return data;
 }

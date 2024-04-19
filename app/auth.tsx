@@ -69,17 +69,13 @@ export default function SignIn() {
           </Text>
         </View>
       </Link>
-      <Button
-        onPress={async () => {
-          // await signIn();
-        }}
-      >
+      <View style={{ height: 20 }} />
+      <Link href="/sign-in">
         <View
           variant="text"
           r={10}
           px={20}
           p={10}
-          my={20}
           style={{ width: 250 }}
           center
         >
@@ -87,7 +83,7 @@ export default function SignIn() {
             Sign In
           </Text>
         </View>
-      </Button>
+      </Link>
       <View m={30}>
         <Text>
           Say something very important here. This is a very important message.
