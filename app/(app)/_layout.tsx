@@ -18,11 +18,6 @@ export const unstable_settings = {
 export default function AppLayout() {
   const { session, isLoading, signOut } = useSession();
 
-  useEffect(() => {
-    if (session) {
-      signOut();
-    }
-  }, [session]);
   console.log(session, "SESS");
   const mode = useColorScheme();
   const insets = useSafeAreaInsets();

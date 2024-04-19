@@ -8,17 +8,42 @@ import { User } from "constants/type";
 import { set } from "zod";
 import { storage } from "utils/storage";
 import { createMongoDBDataAPI } from "mongodb-data-api";
-
+import * as Crypto from "expo-crypto";
+import { hashPassword, verifyPassword } from "utils/hash";
+import { router } from "expo-router";
 // or init by app ID
 export const dataAPI = createMongoDBDataAPI({
   apiKey: process.env.EXPO_PUBLIC_MONGO_API_KEY,
-  appId: process.env.EXPO_PUBLIC_MONGO_APP_ID,
+  urlEndpoint: process.env.EXPO_PUBLIC_URL_ENDPOINT,
+  // appId: process.env.EXPO_PUBLIC_MONGO_APP_ID,
 });
+// (async () => {
+//   const password = await hashPassword("password", "man");
+//   // Store hash in your password DB.
+//   dataAPI
+//     .insertOne({
+//       dataSource: "dev",
+//       database: "fightder_dev",
+//       collection: "users",
+//       document: {
+//         name: "Bro",
+//         username: "man",
+//         password,
+//         age: 19,
+//       },
+//     })
+//     .then((result) => {
+//       console.log(result.insertedId, "insertedId ");
+//     })
+//     .catch((e) => {
+//       console.log(e);
+//     });
+// })();
 
 const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
   signOut: () => void;
-  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<User | null>;
   signUpWithEmail: (
     email: string,
     birthdate: string,
@@ -112,21 +137,42 @@ export function SessionProvider(props: React.PropsWithChildren) {
     setSession(null);
   };
   const signInWithEmail = async (email: string, password: string) => {
-    const res = await dataAPI.findOne({
-      dataSource: "dev",
-      database: "fightder_dev",
-      collection: "users",
-      filter: {
-        email,
-        password,
-      },
-    });
+    try {
+      const res = await dataAPI.find({
+        dataSource: "dev",
+        database: "fightder_dev",
+        collection: "users",
+        filter: {
+          $or: [{ email }, { username: email }],
+        },
+      });
 
-    const user = res.document;
+      const users = res.documents;
 
-    const session = user._id; // temp session with _id of user
+      console.log(users);
+      const foundUser = users.find((user) => {
+        console.log(user, "user");
+        if (verifyPassword(password, user.password)) {
+          console.log("password correct", user);
+          return true; // Stops iteration when correct password is found
+        } else {
+          console.log("password incorrect");
+          return false;
+        }
+      });
 
-    setSession(session);
+      if (foundUser) {
+        setSession(foundUser._id);
+        return foundUser;
+      } else {
+        return null;
+        // Handle case when password is not found
+      }
+      return null;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   };
 
   const signUpWithEmail = async (

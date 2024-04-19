@@ -18,7 +18,7 @@ import { JsonViewer } from "components/JsonViewer";
 import { ProfileImage } from "components/ProfileImage";
 const App = () => {
   const { user, chats } = useUser();
-  const { signOut } = useSession();
+  // const { signOut } = useSession();
   const [show, setShow] = React.useState(true);
   const width = 256;
   const height = 256;

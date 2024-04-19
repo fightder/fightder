@@ -19,66 +19,83 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { MotiView } from "moti";
 import { IconButton } from "components/IconButton";
 import { storage } from "utils/storage";
+import { BlurView } from "expo-blur";
 
-export default function BirthDate() {
+export default function SignIn() {
   const { signIn, isLoading, session, signInWithEmail } = useSession();
-  const [date, setDate] = useState(
-    storage.getString("birthdate")
-      ? new Date(storage.getString("birthdate"))
-      : new Date()
-  );
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [canNext, setCanNext] = useState(false);
 
-  useEffect(() => {
-    console.log(session, isLoading);
-    console.log(new Date(storage.getString("birthdate")), new Date(), "bdd");
-  }, [session, isLoading]);
-
-  useEffect(() => {
-    const now = new Date();
-    console.log(date);
-    console.log(date.toDateString(), now.toLocaleDateString());
-    setCanNext(date.toLocaleDateString() != now.toLocaleDateString());
-  }, [date]);
-
-  const onNext = () => {
-    // check if date is valid
-    const now = new Date();
-    const age = now.getFullYear() - date.getFullYear();
-
-    if (age < 18) {
-      // check if user is over 18
-      router.push("/sign-up/1");
+  const onNext = async () => {
+    setLoading(true);
+    const res = await signInWithEmail(username, password);
+    if (res) {
+      console.log(res, "res pls go in");
+      router.push("/home");
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-
-    storage.set("birthdate", date.toDateString());
-
-    router.push("/sign-up/2");
   };
+  useEffect(() => {
+    if (username && password && password.length > 6) {
+      storage.set("username", username);
+      setCanNext(true);
+    } else setCanNext(false);
+  }, [username, password]);
 
   return (
     <View flex bg={1}>
       <SafeTop back logo />
+      {loading && (
+        <BlurView
+          intensity={100}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 100,
+          }}
+        >
+          <View flex center>
+            <Text variant="title">Loading...</Text>
+          </View>
+        </BlurView>
+      )}
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <View flex style={{ paddingHorizontal: 20 }}>
           <View m={30} gap={5}>
-            <Text variant="header">When is your birthdate?</Text>
-            <DateTimePicker
-              value={date}
-              // display="compact"
-              onChange={(event, selectedDate) => {
-                const currentDate = selectedDate || date;
-                setDate(currentDate);
-              }}
-              mode="date"
-              maximumDate={new Date()}
-              minimumDate={new Date(1900, 1, 1)}
+            <Text variant="title">username/email</Text>
+            <Input
+              value={username}
+              onChangeText={(t) => setUsername(t)}
+              placeholder="omjain"
+              bg={3}
+              p={5}
+              variant="subtitle"
+              textContentType="username"
+              autoCapitalize="none"
+            />
+            <Text variant="title">password</Text>
+            <Input
+              value={password}
+              onChangeText={(t) => setPassword(t)}
+              placeholder="*********"
+              bg={3}
+              p={5}
+              variant="subtitle"
+              textContentType="password"
+              secureTextEntry
             />
           </View>
         </View>
-        <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
+        <Button style={{ margin: 20 }} onPress={onNext} disabled={null}>
           <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
-            <Text variant="title">Next</Text>
+            <Text variant="title">Sign In</Text>
           </View>
         </Button>
       </KeyboardAvoidingView>
