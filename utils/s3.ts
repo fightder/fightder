@@ -80,7 +80,7 @@ var bucketName = "fightder";
 //   console.log("Error: ", err);
 // }
 
-export const uploadToS3 = async (
+export const uploadManyToS3 = async (
   assets: ImagePicker.ImagePickerAsset[],
   startIndex: number,
   callback: (i: number, url: string) => void
@@ -122,7 +122,41 @@ export const uploadToS3 = async (
     throw err;
   }
 };
+export const uploadToS3 = async (asset: ImagePicker.ImagePickerAsset) => {
+  try {
+    const res = await manipulateAsync(
+      asset.uri,
+      [
+        {
+          resize: {
+            height: 900,
+          },
+        },
+      ],
+      { compress: 0.6, format: SaveFormat.JPEG, base64: true }
+    );
+    const buffer = Buffer.from(res.base64, "base64");
 
+    const uploadParams = {
+      Bucket: bucketName,
+      Key: asset.fileName,
+      Body: buffer,
+      ContentType: asset.type,
+    };
+
+    const data = await s3.send(new PutObjectCommand(uploadParams));
+
+    const url = `https://fightder.s3.us-east-005.backblazeb2.com/${encodeURIComponent(
+      asset.fileName
+    )}`;
+    console.log(`Successfully uploaded data to ${bucketName} at ${url}`);
+
+    return url;
+  } catch (err) {
+    console.log("Error uploading to S3:", err);
+    return null;
+  }
+};
 // ImagePicker.launchImageLibraryAsync({
 //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
 //   quality: 1,

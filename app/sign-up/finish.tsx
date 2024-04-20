@@ -117,7 +117,7 @@ export default function Finish() {
   );
 }
 
-async function fileURLtoBlob(url: string) {
+export async function fileURLtoBlob(url: string) {
   const response = await fetch(url);
   const data = await response.blob();
 
