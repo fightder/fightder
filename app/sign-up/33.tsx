@@ -43,7 +43,7 @@ export default function BirthDate() {
       return;
     }
 
-    router.push("/sign-up/2");
+    router.push("/sign-up/email");
   };
 
   return (

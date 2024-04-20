@@ -85,6 +85,7 @@ export default function Images() {
                 onPress={pickImage(index)}
                 onRemove={onRemove(index)}
                 image={image}
+                key={index + "ipb"}
               />
             ))}
           </View>
@@ -97,6 +98,7 @@ export default function Images() {
                   onPress={pickImage(index)}
                   onRemove={onRemove(index)}
                   image={image}
+                  key={index + "ipb"}
                 />
               );
             })}

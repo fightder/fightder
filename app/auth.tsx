@@ -55,7 +55,7 @@ export default function SignIn() {
         }}
       />
       {/* <SignInForm onSignIn={signInWithEmail} /> */}
-      <Link href="/sign-up/1">
+      <Link href="/sign-up/age">
         <View
           variant="primary"
           r={10}

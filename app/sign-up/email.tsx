@@ -6,7 +6,12 @@ import { View } from "components/View";
 import { Text } from "components/Text";
 import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
-import { Image, KeyboardAvoidingView } from "react-native";
+import {
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import SignInForm from "components/SignInForm";
 // import {
 //   GoogleSignin,
@@ -41,35 +46,40 @@ export default function Email() {
     if (email) {
       storage.set("email", email.trim());
 
-      router.push("/sign-up/3");
+      router.push("/sign-up/activities");
     }
   };
 
   return (
-    <View flex bg={1}>
-      <SafeTop back logo />
-      <KeyboardAvoidingView style={{ flex: 1 }}>
-        {/* </Link> */}
-        <View flex style={{ paddingHorizontal: 20 }}>
-          <View m={30} gap={5}>
-            <Text variant="header">Please Enter your Email</Text>
-            <Input
-              value={email}
-              onChangeText={(t) => setEmail(t)}
-              placeholder="Email"
-              bg={3}
-              p={5}
-              variant="subtitle"
-            />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View flex bg={1}>
+        <SafeTop back logo />
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+          {/* </Link> */}
+          <View flex style={{ paddingHorizontal: 20 }}>
+            <View m={30} gap={5}>
+              <Text variant="header">Please Enter your Email</Text>
+              <Input
+                value={email}
+                onChangeText={(t) => setEmail(t)}
+                placeholder="Email"
+                keyboardType="email-address"
+                returnKeyType="next"
+                autoCapitalize="none"
+                bg={3}
+                p={5}
+                variant="subtitle"
+              />
+            </View>
           </View>
-        </View>
-        <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
-          <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
-            <Text variant="title">Next</Text>
-          </View>
-        </Button>
-      </KeyboardAvoidingView>
-      <SafeBottom />
-    </View>
+          <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
+            <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
+              <Text variant="title">Next</Text>
+            </View>
+          </Button>
+        </KeyboardAvoidingView>
+        <SafeBottom />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }

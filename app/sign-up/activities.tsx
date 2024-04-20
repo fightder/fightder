@@ -32,7 +32,7 @@ export default function Activities() {
 
     storage.set("activities", JSON.stringify(activities));
 
-    router.push("/sign-up/4");
+    router.push("/sign-up/images");
   };
 
   return (

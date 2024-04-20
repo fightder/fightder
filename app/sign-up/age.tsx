@@ -45,15 +45,14 @@ export default function BirthDate() {
     // check if date is valid
     const now = new Date();
     const age = now.getFullYear() - date.getFullYear();
+    console.log(age);
 
     if (age < 18) {
       // check if user is over 18
-      router.push("/sign-up/1");
+      storage.set("birthdate", date.toDateString());
+
+      router.push("/sign-up/email");
     }
-
-    storage.set("birthdate", date.toDateString());
-
-    router.push("/sign-up/2");
   };
 
   return (
