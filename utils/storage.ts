@@ -134,3 +134,93 @@ export const UploadFile = async (file: Blob, name?: string, type?: string) => {
 
   return url;
 };
+
+const uploadFiles = async (blobArray: Blob[]) => {
+  let urlAndAuthToken = null;
+
+  for (const blob of blobArray) {
+    let succeeded = false;
+    for (let i = 0; i < 5 && !succeeded; i++) {
+      // Get a new upload URL and auth token, if needed
+      if (!urlAndAuthToken) {
+        try {
+          const getUrlRequest = makeGetUploadUrlRequest();
+          const getUrlResponse = await callB2WithBackOff(getUrlRequest);
+          if (getUrlResponse.status !== 200) {
+            reportFailure(blob, getUrlResponse);
+            continue; // Move to the next blob in the array
+          }
+          urlAndAuthToken = getUrlResponse.getUrlAndAuthToken();
+        } catch (error) {
+          console.error("Error getting upload URL and auth token:", error);
+          continue; // Move to the next blob in the array
+        }
+      }
+
+      // Upload the file
+      try {
+        const uploadRequest = makeUploadRequest(blob);
+        const response = await callHttpService(uploadRequest);
+        const status = response.status;
+        if (status === 200) {
+          reportSuccess(blob);
+          succeeded = true;
+          break;
+        } else if (response.isFailureToConnect()) {
+          urlAndAuthToken = null;
+        } else if (response.isBrokenPipe()) {
+          urlAndAuthToken = null;
+        } else if (
+          status === 401 &&
+          (response.statusCode === "expired_auth_token" ||
+            response.statusCode === "bad_auth_token")
+        ) {
+          urlAndAuthToken = null;
+        } else if (status === 408) {
+          await exponentialBackOff();
+        } else if (status === 429) {
+          await exponentialBackOff();
+        } else {
+          reportFailure(blob, response);
+          continue; // Move to the next blob in the array
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        continue; // Move to the next blob in the array
+      }
+    }
+
+    if (!succeeded) {
+      reportFailure(blob, response);
+    }
+  }
+};
+
+const callB2WithBackOff = async (request) => {
+  let delaySeconds = 1;
+  const maxDelay = 64;
+
+  while (true) {
+    try {
+      const response = await callHttpService(request);
+      const status = response.status;
+      if (status === 429) {
+        const retryAfter = response.headers.get("Retry-After");
+        await sleepSeconds(retryAfter);
+        delaySeconds = 1; // reset 503 back-off
+      } else if (status === 503) {
+        if (maxDelay < delaySeconds) {
+          // give up -- delay is too long
+          return response;
+        }
+        await sleepSeconds(delaySeconds);
+        delaySeconds *= 2;
+      } else {
+        return response;
+      }
+    } catch (error) {
+      console.error("Error calling B2 service:", error);
+      return null;
+    }
+  }
+};

@@ -59,6 +59,14 @@
         {
           "photosPermission": "The app accesses your photos to people find you based on your photos."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
+        }
       ]
     ],
     "extra": {

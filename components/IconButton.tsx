@@ -8,7 +8,6 @@ export const IconButton = ({
   onPress,
   name,
   href,
-  dynamicTypeRamp,
   variant,
   ...props
 }: {
@@ -68,7 +67,7 @@ export const IconButton = ({
     >
       <Ionicons
         name={name}
-        size={24}
+        size={props.size || 24}
         style={{
           alignSelf: "center",
         }}
