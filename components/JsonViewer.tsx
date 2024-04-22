@@ -12,8 +12,8 @@ export const JsonViewer = ({ json, ...props }) => {
       return beautifiedJson;
     } catch (error) {
       // Handle JSON parsing errors
-      console.error("Error parsing JSON:", error.message);
-      return jsonString; // Return the original string if there's an error
+      // console.error("Error parsing JSON:", error.message);
+      return JSON.stringify(jsonString); // Return the original string if there's an error
     }
   }
 

@@ -146,6 +146,7 @@ export const uploadToS3 = async (asset: ImagePicker.ImagePickerAsset) => {
 
     const data = await s3.send(new PutObjectCommand(uploadParams));
 
+    console.log(data);
     const url = `https://fightder.s3.us-east-005.backblazeb2.com/${encodeURIComponent(
       asset.fileName
     )}`;

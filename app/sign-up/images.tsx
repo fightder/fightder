@@ -1,102 +1,111 @@
 import { useSession } from "contexts/auth.context";
 import { Blurhash } from "react-native-blurhash";
 import { Link, router, useGlobalSearchParams } from "expo-router";
-import * as Linking from "expo-linking";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View } from "components/View";
 import { Text } from "components/Text";
 import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
-import { ActivityIndicator, Image, KeyboardAvoidingView } from "react-native";
-import SignInForm from "components/SignInForm";
+import { ActivityIndicator, KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { supabase } from "utils/supabase";
-import { Input } from "components/Input";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MotiView } from "moti";
+import { Image } from "expo-image";
+
 import { IconButton } from "components/IconButton";
 import { UploadFile, storage } from "utils/storage";
-import DropDownPicker from "react-native-dropdown-picker";
-import { fileURLtoBlob } from "./finish";
 import { uploadToS3 } from "utils/s3";
 import { JsonViewer } from "components/JsonViewer";
+import * as Burnt from "burnt";
+import { ScrollView } from "components/ScrollView";
+import { Skeleton } from "moti/skeleton";
+import { rotate } from "@shopify/react-native-skia";
 
+type ImageItem = {
+  asset?: ImagePicker.ImagePickerAsset;
+  uploadedUrl?: string | null;
+  blurhash?: string | null;
+};
 export default function Images() {
   const { signIn, isLoading, session } = useSession();
   const [open, setOpen] = useState(false);
-  const [images, setImages] = useState(
-    storage.getString("images") ? JSON.parse(storage.getString("images")) : [""]
+  const [error, setError] = useState("");
+  const [images, setImages] = useState<ImageItem[]>(
+    storage.getString("images") ? JSON.parse(storage.getString("images")) : []
   );
-  const [imagesLoading, setImagesLoading] = useState({
-    0: false,
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-  });
-  const [blurhashes, setBlurhashes] = useState([""]);
   const [canNext, setCanNext] = useState(false);
 
+  const memoizedImageData = useMemo(() => {
+    return images.length < 6 ? [...images, null] : images;
+  }, [images]);
+  const MemoizedImagePickerButton = React.memo(ImagePickerButton);
+
   const pickImage = (index: number) => async () => {
+    // storage.delete("images");
+    // storage.set("images", undefined);
+    console.log(storage.getString("images"), "tmgs");
     // No permissions request is necessary for launching the image library
-    console.log(blurhashes.filter((b) => b != "").length);
+    console.log(images.length, index);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       quality: 1,
-      base64: true,
+      // base64: true,
       allowsMultipleSelection: true,
-      selectionLimit: 6 - index,
+      selectionLimit: 6 - images.length,
     });
 
     if (result.canceled) {
       return;
     }
-
-    // const onCallback = (i: number, url) => {
-    //   setImagesLoading({ ...imagesLoading, [i]: false });
-    //   setImages([...images.slice(0, i), url, ...images.slice(i + 1)]);
-    // };
-
-    // result.assets.forEach(async (file, i) => {
-    //   setImagesLoading({ ...imagesLoading, [index + i]: true });
-
-    //   const blurhash = await Blurhash.encode(file.uri, 4, 3);
-    //   setBlurhashes([
-    //     ...blurhashes.slice(0, index + i),
-    //     blurhash,
-    //     ...blurhashes.slice(index + i + 1),
-    //   ]);
-    //   const url = await uploadToS3(file);
-
-    //   setImagesLoading({ ...imagesLoading, [index + i]: false });
-    //   setImages([
-    //     ...images.slice(0, index + i),
-    //     url,
-    //     ...images.slice(index + i + 1),
-    //   ]);
-    // });
-
+    result.assets.forEach((file) => {
+      setImages((imgs) => [
+        ...imgs.slice(0, index),
+        {
+          asset: file,
+          blurhash: "loading",
+          uploadedUrl: "loading",
+        },
+        ...imgs.slice(index),
+      ]);
+    });
     const hashImages = result.assets.map(async (file, i) => {
-      setImagesLoading({ ...imagesLoading, [index + i]: true });
-
       const blurhash = await Blurhash.encode(file.uri, 4, 3);
       console.log(blurhash, "blurhash");
-      setBlurhashes([
-        ...blurhashes.slice(0, index + i),
-        blurhash,
-        ...blurhashes.slice(index + i + 1),
+      setImages((imgs) => [
+        ...imgs.slice(0, index + i),
+        {
+          ...imgs[index + i],
+          blurhash,
+        },
+        ...imgs.slice(index + i + 1),
       ]);
     });
 
     const uploadImages = result.assets.map(async (file, i) => {
       const url = await uploadToS3(file);
-
-      setImagesLoading({ ...imagesLoading, [index + i]: false });
-      setImages([
+      if (url == null) {
+        // show error
+        setError("Error uploading image " + i + 1 + index);
+        setImages((images) => [
+          ...images.slice(0, index + i),
+          {
+            ...images[index + i],
+            uploadedUrl: "error",
+          },
+          ...images.slice(index + i + 1),
+        ]);
+        Burnt.toast({
+          title: "Error Uploading Image",
+          preset: "error",
+          message: "Please retry",
+        });
+        return;
+      }
+      setImages((images) => [
         ...images.slice(0, index + i),
-        url,
+        {
+          ...images[index + i],
+          uploadedUrl: url,
+        },
         ...images.slice(index + i + 1),
       ]);
     });
@@ -111,24 +120,41 @@ export default function Images() {
   };
 
   const onRemove = (i: number) => () => {
-    if (i == 0) {
-      setImages([...images.slice(1)]);
-      setBlurhashes([...blurhashes.slice(1)]);
+    setImages((prevImages) => prevImages.filter((_, index) => index !== i));
+  };
+
+  const reUploadImage = (index: number) => async () => {
+    const image = images[index];
+    if (!image.asset) {
       return;
     }
-    if (images.length == 1) {
-      setImages([""]);
-      setBlurhashes([""]);
+    const url = await uploadToS3(image.asset);
+    if (url == null) {
+      // show error
+      setError("Error uploading image " + index);
+      setImages((images) => [
+        ...images.slice(0, index),
+        {
+          ...images[index],
+          uploadedUrl: "error",
+        },
+        ...images.slice(index + 1),
+      ]);
       return;
     }
-    setImages([...images.slice(0, i), ...images.slice(i + 1)]);
-    setBlurhashes([...blurhashes.slice(0, i), ...blurhashes.slice(i + 1)]);
+    setImages((images) => [
+      ...images.slice(0, index),
+      {
+        ...images[index],
+        uploadedUrl: url,
+      },
+      ...images.slice(index + 1),
+    ]);
   };
 
   useEffect(() => {
     console.log(storage.getString("images"), "tmgs");
-    const imagescount = images.filter((i) => i !== "").length;
-    if (imagescount >= 3) {
+    if (images.length >= 3) {
       storage.set("images", JSON.stringify(images));
       setCanNext(true);
     }
@@ -136,19 +162,17 @@ export default function Images() {
 
   const onNext = () => {
     // check if date is valid
-
     storage.set("images", JSON.stringify(images));
 
     router.push("/sign-up/finish");
   };
 
   return (
-    <View flex bg={1}>
+    <ScrollView flex bg={1}>
       <SafeTop back logo />
       <KeyboardAvoidingView style={{ flex: 1 }}>
-        <JsonViewer json={images} />
-        <JsonViewer json={blurhashes} />
-        <Text>{JSON.stringify(imagesLoading)}</Text>
+        {/* <JsonViewer json={images} /> */}
+        <Text>{images.length}</Text>
 
         <View flex style={{ paddingHorizontal: 10, gap: 10 }}>
           <View m={30} gap={10}>
@@ -161,41 +185,24 @@ export default function Images() {
             center
             style={{
               flexWrap: "wrap",
+              justifyContent: "flex-start",
             }}
           >
             {/* {[...images, ...Array(3).fill("")] */}
-            {[...images, ...Array(6).fill("")]
-              .slice(0, 6)
-              .map((image, index) => (
-                <ImagePickerButton
-                  index={index}
-                  loading={imagesLoading[index]}
-                  onPress={pickImage(index)}
-                  onRemove={onRemove(index)}
-                  image={image}
-                  hash={blurhashes[index]}
-                  key={index + "ipb"}
-                />
-              ))}
+            {/* {[...images, ...Array(6).fill("")]
+              .slice(0, 6) */}
+            {memoizedImageData.map((image, index) => (
+              <MemoizedImagePickerButton
+                key={`${image}-${index}`}
+                index={index}
+                onPick={pickImage(index)}
+                onReload={reUploadImage(index)}
+                onRemove={onRemove(index)}
+                image={image || ""}
+              />
+            ))}
           </View>
-          <View row gap={5} center>
-            {/* {[...images.slice(3, 6), ...Array(3).fill("")]
-              .slice(0, 3)
-              .map((image, index) => {
-                index += 3;
-                return (
-                  <ImagePickerButton
-                    index={index}
-                    onPress={pickImage(index)}
-                    onRemove={onRemove(index)}
-                    hash={blurhashes[index]}
-                    image={image}
-                    loading={imagesLoading[index]}
-                    key={index + "ipb"}
-                  />
-                );
-              })} */}
-          </View>
+          <View row gap={5} center></View>
         </View>
         <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
           <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
@@ -204,95 +211,162 @@ export default function Images() {
         </Button>
       </KeyboardAvoidingView>
       <SafeBottom />
-    </View>
+    </ScrollView>
   );
 }
 
 export const ImagePickerButton = ({
-  onPress,
+  onPick,
+  onReload,
   onRemove,
   image,
   index,
-  loading,
-  hash,
+}: {
+  onPick: () => void;
+  onReload: () => void;
+  onRemove: () => void;
+  image: ImageItem | "";
+  index: number;
 }) => {
-  return (
-    <>
-      <Button key={index + "ipb"} onPress={!loading && onPress}>
-        {loading && (
-          <View
+  // console.log(image.uploadedUrl, "image");
+  if (image === "" || !image.asset) {
+    return (
+      <Button key={index + "ipb"} onPress={onPick}>
+        <View
+          m={5}
+          bg={4}
+          gap={10}
+          r={10}
+          style={{ width: 110, height: 170 }}
+          center
+        >
+          <IconButton name="add" variant="circle" onPress={onPick} />
+        </View>
+      </Button>
+    );
+  }
+
+  // if image is loading
+  if (image.uploadedUrl == "loading" || !image.uploadedUrl) {
+    if (image.blurhash)
+      return (
+        <View m={5}>
+          <Blurhash
+            blurhash={image.blurhash}
             style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              zIndex: 1000,
-              backgroundColor: "rgba(0,0,0,0.5)",
+              width: 110,
+              height: 170,
+              margin: 5,
               borderRadius: 10,
             }}
-            center
-          >
-            <Text>{hash}</Text>
-            <Blurhash blurhash={hash} style={{ flex: 1 }} />
-            {/* <ActivityIndicator size="large" color={"white"} /> */}
-          </View>
-        )}
-        {image ? (
-          <>
-            <IconButton
-              name="close"
-              onPress={onRemove}
-              variant="circle"
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                zIndex: 2000,
-              }}
-            />
-            <Image
-              source={{ uri: image }}
-              style={{
-                width: 110,
-                height: 170,
-                margin: 5,
-                borderRadius: 10,
-                zIndex: -21,
-              }}
-            />
-          </>
-        ) : (
+          />
+        </View>
+      );
+
+    return (
+      <View m={5}>
+        <Skeleton width={110} height={170} radius={10} />
+      </View>
+    );
+  }
+
+  // if image is error
+  if (image.uploadedUrl == "error") {
+    if (image.blurhash) {
+      return (
+        <View
+          m={5}
+          // bg={4}
+          // gap={10}
+          r={10}
+          style={{ width: 110, height: 170, overflow: "hidden" }}
+          center
+        >
           <View
-            key={index}
-            m={5}
-            bg={4}
-            gap={10}
-            r={10}
-            style={{ width: 110, height: 170 }}
-            center
+            bg={2}
+            r={100}
+            style={{
+              padding: 7,
+              zIndex: 200,
+
+              position: "absolute",
+            }}
           >
             <IconButton
-              name="add"
-              variant="circle"
-              onPress={!loading && onPress}
+              name="reload"
+              onPress={onReload}
+              size={30}
+              style={
+                {
+                  // right: 0,
+                }
+              }
             />
           </View>
-        )}
-      </Button>
-      {hash && (
-        <Blurhash
-          blurhash={hash}
+          <Blurhash
+            blurhash={image.blurhash}
+            style={{
+              // position: "absolute",
+              width: 110,
+              height: 170,
+              // margin: 5,
+              // overflow: "hidden",
+              borderRadius: 10,
+              zIndex: -10,
+            }}
+          />
+        </View>
+      );
+    }
+    return (
+      <View
+        m={5}
+        bg={4}
+        gap={10}
+        r={10}
+        style={{ width: 110, height: 170 }}
+        center
+      >
+        <IconButton name="reload" onPress={onReload} />
+      </View>
+    );
+  }
+  // if image is uploaded
+  return (
+    <>
+      <View
+        m={5}
+        // bg={4}
+        // gap={10}
+        r={10}
+        style={{ width: 110, height: 170 }}
+        // center
+      >
+        <IconButton
+          name="close"
+          onPress={onRemove}
+          variant="circle"
           style={{
             position: "absolute",
-            width: 110,
-            height: 170,
-            margin: 5,
-            overflow: "hidden",
-            zIndex: -61,
+            top: -5,
+            left: -5,
+            zIndex: 2000,
           }}
         />
-      )}
+        <Image
+          source={{ uri: image.uploadedUrl }}
+          placeholder={image.blurhash}
+          style={{
+            // width: 110,
+            flex: 1,
+            height: 170,
+            // margin: 5,
+            borderRadius: 10,
+            zIndex: -21,
+          }}
+          transition={1000}
+        />
+      </View>
     </>
   );
 };
