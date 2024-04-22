@@ -9,6 +9,7 @@ import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Image, KeyboardAvoidingView, LogBox } from "react-native";
 import { Input } from "components/Input";
 import { UploadFile, storage } from "utils/storage";
+import { ImageItem } from "./images";
 // import {
 //   S3Client,
 //   CreateBucketCommand,
@@ -20,13 +21,13 @@ export default function Finish() {
   const { signIn, isLoading, signUpWithEmail } = useSession();
   const [username, setUsername] = useState("");
   const [canNext, setCanNext] = useState(false);
-  const images: string[] = JSON.parse(storage.getString("images"));
+  const images: ImageItem[] = JSON.parse(storage.getString("images"));
   const email = storage.getString("email");
   const birthdate = storage.getString("birthdate");
   const activities = JSON.parse(storage.getString("activities"));
 
   useEffect(() => {
-    if (username) {
+    if (username && username.length > 3) {
       storage.set("username", username);
       setCanNext(true);
     }
@@ -42,35 +43,17 @@ export default function Finish() {
 
     storage.set("username", username);
 
-    const imagesUrls = Array(images.length).fill("");
     try {
-      await Promise.all(
-        images.map(async (image, i) => {
-          console.log(image, i);
-          const blob = await fileURLtoBlob(image);
-          console.log(blob.arrayBuffer, "ab");
-          if (blob) {
-            const res = await UploadFile(
-              blob,
-              username + "pfp" + Date.now(),
-              blob.type
-            );
-            console.log(res);
-            imagesUrls[i] = res;
-          }
-        })
-      );
-
-      // After all URLs are collected, print them
-      console.log(imagesUrls);
-
-      const res = await signUpWithEmail(
+      const res = await signUpWithEmail({
         email,
         birthdate,
         activities,
-        imagesUrls,
-        username
-      );
+        images: images.map((i) => ({
+          uri: i.uploadedUrl,
+          blurhash: i.blurhash,
+        })),
+        username,
+      });
 
       console.log(res);
     } catch (e) {
@@ -95,10 +78,13 @@ export default function Finish() {
               value={username}
               onChangeText={(t) => setUsername(t)}
               placeholder="username"
+              autoCorrect={false}
+              autoCapitalize="none"
               bg={3}
               p={5}
               variant="subtitle"
             />
+            <Text variant="caption">Atleast 4 characters</Text>
           </View>
         </View>
         <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>

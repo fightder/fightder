@@ -19,7 +19,7 @@ import { ScrollView } from "components/ScrollView";
 import { Skeleton } from "moti/skeleton";
 import { rotate } from "@shopify/react-native-skia";
 
-type ImageItem = {
+export type ImageItem = {
   asset?: ImagePicker.ImagePickerAsset;
   uploadedUrl?: string | null;
   blurhash?: string | null;
@@ -168,11 +168,10 @@ export default function Images() {
   };
 
   return (
-    <ScrollView flex bg={1}>
+    <View flex bg={1}>
       <SafeTop back logo />
       <KeyboardAvoidingView style={{ flex: 1 }}>
         {/* <JsonViewer json={images} /> */}
-        <Text>{images.length}</Text>
 
         <View flex style={{ paddingHorizontal: 10, gap: 10 }}>
           <View m={30} gap={10}>
@@ -211,7 +210,7 @@ export default function Images() {
         </Button>
       </KeyboardAvoidingView>
       <SafeBottom />
-    </ScrollView>
+    </View>
   );
 }
 

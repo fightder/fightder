@@ -44,13 +44,17 @@ const AuthContext = React.createContext<{
   signIn: () => Promise<void | string>;
   signOut: () => void;
   signInWithEmail: (email: string, password: string) => Promise<User | null>;
-  signUpWithEmail: (
-    email: string,
-    birthdate: string,
-    activities: string[],
-    images: string[],
-    username: string
-  ) => Promise<void>;
+  signUpWithEmail: (data: {
+    email: string;
+    birthdate: string;
+    activities: string[];
+    images: {
+      uri: string;
+      blurhash: string;
+    }[];
+    username: string;
+    password: string;
+  }) => Promise<string>;
   getFyncUserById: (id: string) => Promise<User | null>;
   session?: string | null;
   isLoading: boolean;
@@ -175,45 +179,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
     }
   };
 
-  const signUpWithEmail = async (
-    email: string,
-    birthdate: string,
-    activities: string[],
-    images: string[],
-    username: string
-  ) => {
-    // check if user exists by email or username
-    const userExists = await dataAPI.findOne({
-      dataSource: "dev",
-      database: "fightder_dev",
-      collection: "users",
-      filter: {
-        $or: [{ email }],
-      },
-    });
-
-    if (userExists) {
-      console.log("user exists");
-      return;
-    } else {
-      const newUser = await dataAPI.insertOne({
-        dataSource: "dev",
-        database: "fightder_dev",
-        collection: "users",
-        document: {
-          email,
-          birthdate,
-          activities,
-          images,
-          username,
-        },
-      });
-      console.log(newUser.insertedId, "insertedId");
-      setSession(newUser.insertedId);
-
-      return newUser.insertedId;
-    }
-  };
   return (
     <AuthContext.Provider
       value={{
@@ -221,7 +186,60 @@ export function SessionProvider(props: React.PropsWithChildren) {
         signOut,
         session,
         signInWithEmail,
-        signUpWithEmail,
+        signUpWithEmail: async ({
+          email,
+          birthdate,
+          activities,
+          images,
+          username,
+          password,
+        }: {
+          email: string;
+          birthdate: string;
+          activities: string[];
+          images: {
+            uri: string;
+            blurhash: string;
+          }[];
+          username: string;
+          password: string;
+        }) => {
+          // check if user exists by email or username
+          const res = await dataAPI.find({
+            dataSource: "dev",
+            database: "fightder_dev",
+            collection: "users",
+            filter: {
+              $or: [{ email }, { username: email }],
+            },
+          });
+
+          const users = res.documents;
+
+          console.log(users);
+          if (users.length > 0) {
+            console.log("user exists");
+            return;
+          } else {
+            const newUser = await dataAPI.insertOne({
+              dataSource: "dev",
+              database: "fightder_dev",
+              collection: "users",
+              document: {
+                email,
+                birthdate,
+                activities,
+                images,
+                username,
+                password: await hashPassword(password, username),
+              },
+            });
+            console.log(newUser.insertedId, "insertedId");
+            setSession(newUser.insertedId);
+
+            return newUser.insertedId;
+          }
+        },
         getFyncUserById: async (id: string) => {
           console.log(session, id, "ssidd");
           try {

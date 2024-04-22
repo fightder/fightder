@@ -63,7 +63,7 @@ export const fontStyles = StyleSheet.create({
     fontFamily: "Outfit_400Regular",
   },
   caption: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: "Outfit_300Light",
   },
 });
