@@ -143,13 +143,10 @@ export function SessionProvider(props: React.PropsWithChildren) {
 
   const signInWithEmail = async (email: string, password: string) => {
     try {
-      const res = await axios.post(
-        process.env.EXPO_PUBLIC_API_URL + "/sign-up",
-        {
-          email,
-          password,
-        }
-      );
+      const res = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/login", {
+        email,
+        password,
+      });
       setSession(res.data);
 
       return res.data;

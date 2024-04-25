@@ -7,7 +7,9 @@
         "simulator": true
       },
       "env": {
-        "APP_ENV": "development"
+        "APP_ENV": "development",
+        "EXPO_PUBLIC_B2_KEY_ID": "0058f98d43dc9e80000000007",
+        "EXPO_PUBLIC_B2_ACCESS_KEY": "K005hP+UwkD/F+wPROUg19dWxD0tWl0"
       }
     },
     "development": {
@@ -23,7 +25,7 @@
       "distribution": "internal",
       "env": {
         "APP_ENV": "development",
-        "EXPO_PUBLIC_API_URL": "localhost:8000",
+        "EXPO_PUBLIC_API_URL": "http://localhost:8000",
         "EXPO_PUBLIC_B2_KEY_ID": "0058f98d43dc9e80000000007",
         "EXPO_PUBLIC_B2_ACCESS_KEY": "K005hP+UwkD/F+wPROUg19dWxD0tWl0"
       }

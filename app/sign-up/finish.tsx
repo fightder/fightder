@@ -39,8 +39,8 @@ export default function Finish() {
     ) {
       storage.set("username", username);
       setCanNext(true);
-    }
-  }, [username]);
+    } else setCanNext(false);
+  }, [username, password, confirmPassword]);
 
   const onNext = async () => {
     // check if date is valid

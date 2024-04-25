@@ -2,8 +2,7 @@ export default () => {
   return {
     expo: {
       name: process.env.APP_ENV === "production" ? "susu" : "susu (DEV)",
-
-      slug: "fightder",
+      slug: "susu",
       scheme: "susu",
       version: "1.0.0",
       orientation: "portrait",
@@ -79,10 +78,10 @@ export default () => {
           origin: false,
         },
         eas: {
-          projectId: "fe5fbc73-81d8-4d66-b52a-3601cc5409fc",
+          projectId: "fef1f6e4-33ee-4706-b188-609a91bac569",
         },
       },
-      owner: "fightder",
+      owner: "susuteam",
     },
   };
 };

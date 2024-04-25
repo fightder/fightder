@@ -1,7 +1,12 @@
 import { useSession } from "contexts/auth.context";
-import { UserProvider } from "contexts/user.context";
+import { UserProvider, useUser } from "contexts/user.context";
 import { Redirect, Stack, Tabs } from "expo-router";
-import { StyleSheet, Text, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  useColorScheme,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SvgXml } from "react-native-svg";
 import { BlurView } from "expo-blur";
@@ -18,6 +23,7 @@ export const unstable_settings = {
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
+  const { user } = useUser();
   const mode = useColorScheme();
   const insets = useSafeAreaInsets();
   const [location, setLocation] = useState(null);
@@ -49,8 +55,8 @@ export default function AppLayout() {
     return <Text>Loading...</Text>;
   }
 
-  if (!session) {
-    return <Redirect href="/auth" />;
+  if (!user) {
+    return <ActivityIndicator />;
   }
 
   // This layout can be deferred because it's not the root layout.

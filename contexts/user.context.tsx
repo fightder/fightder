@@ -47,7 +47,8 @@ export function useUser() {
 
 export function UserProvider(props: React.PropsWithChildren) {
   const { signIn, isLoading, session, signInWithEmail } = useSession();
-  const [user, setUser] = useState<User>();
+  // const [user, setUser] = useState<User>();
+
   const [fights, setFights] = useState<Fight[]>([]);
   const [chats, setChats] = useState<Chat[]>([
     {
@@ -69,23 +70,22 @@ export function UserProvider(props: React.PropsWithChildren) {
   ]);
   const [notifications, setNotifications] = useState<string[]>([]);
   const {
-    status,
-    data,
-    error: getProfileError,
+    status: userStatus,
+    data: user,
+    error: getUserError,
   } = useQuery({
     queryKey: ["profile", "me"],
-    queryFn: getProfile,
+    queryFn: getProfile(session),
   });
 
   const [error, setError] = useState<string>();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    console.log(session, "ZESTY");
-    if (!user) {
-      const res = axios.get(endpoints.user);
+    if (userStatus === "success") {
+      setLoaded(true);
     }
-  }, []);
+  }, [userStatus]);
 
   const createFight = (fight: Fight) => {
     console.log(fight, "fight");
@@ -171,34 +171,34 @@ export function UserProvider(props: React.PropsWithChildren) {
     ]);
   };
 
-  useEffect(() => {
-    (async () => {
-      const jsonUser = storage.getString("user");
-      console.log(jsonUser, "jsonUser");
-      if (
-        !jsonUser ||
-        jsonUser === "undefined" ||
-        jsonUser === "{}" ||
-        !jsonUser.includes("_id")
-      ) {
-        console.log("fetching user");
-        // setUser({
-        //   _id: "0",
-        //   email: "b@gg.gg",
-        //   name: "B",
-        //   profilePicture:
-        //     "https://cdn.discordapp.com/attachments/1143923878696075415/1202256650564816966/IMG_3188.jpg?ex=65e87b42&is=65d60642&hm=defe8ad7dd300af37cc700d9513ef8cd2359269b2c9daabab2061ed710fa529c&",
-        //   bio: "I am a cool person",
-        // });
+  // useEffect(() => {
+  //   (async () => {
+  //     const jsonUser = storage.getString("user");
+  //     console.log(jsonUser, "jsonUser");
+  //     if (
+  //       !jsonUser ||
+  //       jsonUser === "undefined" ||
+  //       jsonUser === "{}" ||
+  //       !jsonUser.includes("_id")
+  //     ) {
+  //       console.log("fetching user");
+  //       // setUser({
+  //       //   _id: "0",
+  //       //   email: "b@gg.gg",
+  //       //   name: "B",
+  //       //   profilePicture:
+  //       //     "https://cdn.discordapp.com/attachments/1143923878696075415/1202256650564816966/IMG_3188.jpg?ex=65e87b42&is=65d60642&hm=defe8ad7dd300af37cc700d9513ef8cd2359269b2c9daabab2061ed710fa529c&",
+  //       //   bio: "I am a cool person",
+  //       // });
 
-        // storage.set("user", JSON.stringify(user));
-        return;
-      }
-      const userObject = JSON.parse(jsonUser);
-      console.log(userObject);
-      setUser(userObject);
-    })();
-  }, []);
+  //       // storage.set("user", JSON.stringify(user));
+  //       return;
+  //     }
+  //     const userObject = JSON.parse(jsonUser);
+  //     console.log(userObject);
+  //     setUser(userObject);
+  //   })();
+  // }, []);
 
   return (
     <UserContext.Provider
