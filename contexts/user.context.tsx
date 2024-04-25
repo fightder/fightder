@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useStorageState } from "../hooks/useStorageState";
-import { Chat, User } from "constants/type";
+import { Chat, Opponent, User } from "constants/type";
 import { Linking } from "react-native";
 import endpoints from "constants/endpoints";
 import * as WebBrowser from "expo-web-browser";
@@ -11,10 +11,11 @@ import Chats from "app/(app)/(tabs)/chats";
 import { useSession } from "./auth.context";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { getProfile } from "utils/api";
+import { getOpponents, getProfile } from "utils/api";
 
 const UserContext = React.createContext<{
   user: User;
+  opponents: Opponent[];
   fights: Fight[];
   chats: Chat[];
   setChats: (chats: Chat[]) => void;
@@ -24,6 +25,7 @@ const UserContext = React.createContext<{
   notifications: string[];
 }>({
   user: {},
+  opponents: [],
   fights: [],
   createFight: () => {},
   cancelFight: () => {},
@@ -72,10 +74,19 @@ export function UserProvider(props: React.PropsWithChildren) {
   const {
     status: userStatus,
     data: user,
-    error: getUserError,
+    error: userError,
   } = useQuery({
     queryKey: ["profile", "me"],
     queryFn: getProfile(session),
+  });
+  const [opponentsFilter, setOpponentsFilter] = useState<string>("all");
+  const {
+    status: opponentsStatus,
+    data: opponents,
+    error: opponentsError,
+  } = useQuery({
+    queryKey: ["opponents", opponentsFilter],
+    queryFn: getOpponents(session),
   });
 
   const [error, setError] = useState<string>();
@@ -204,6 +215,7 @@ export function UserProvider(props: React.PropsWithChildren) {
     <UserContext.Provider
       value={{
         user,
+        opponents,
         chats,
         setChats,
         fights,

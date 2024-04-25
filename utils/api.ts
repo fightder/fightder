@@ -22,18 +22,32 @@ export const getProfile =
     }
   };
 
-export const getOpponents = async ({ queryKey }) => {
-  if (queryKey[1] == "all") {
-    const res = await axios.get(process.env.EXPO_PUBLIC_API_URL + "/opponents");
-    return res.data;
-  } else if (queryKey[1]) {
-    const res = await axios.get(
-      "https://api.opendota.com/api/players/" + queryKey[1]
-    );
-    console.log(res.data);
-    return res.data;
-  }
-};
+export const getOpponents =
+  (session: string) =>
+  async ({ queryKey }) => {
+    if (queryKey[1] == "all") {
+      const res = await axios.get(
+        process.env.EXPO_PUBLIC_API_URL + "/opponents",
+        {
+          headers: {
+            Authorization: `Bearer ${session}`,
+          },
+        }
+      );
+      return res.data;
+    } else if (queryKey[1]) {
+      const res = await axios.get(
+        "https://api.opendota.com/api/players/" + queryKey[1],
+        {
+          headers: {
+            Authorization: `Bearer ${session}`,
+          },
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    }
+  };
 
 export const getFights = async ({ queryKey }) => {
   if (queryKey[1] == "all") {

@@ -8,7 +8,6 @@ import React, { ComponentProps } from "react";
 import { BlurView } from "expo-blur";
 import { SafeTop } from "components/SafeTop";
 import { useLocalSearchParams } from "expo-router";
-import { Opp } from "./SwipeCard";
 import { View } from "./View";
 import { Text } from "./Text";
 import { IconButton } from "./IconButton";
@@ -23,13 +22,14 @@ import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { windowSize } from "constants/size";
 import ImageGallery from "./ImageGallery";
 import { ScrollView } from "react-native-gesture-handler";
+import { Opponent } from "constants/type";
 
 const OppModal = ({
   opp,
   dismiss,
   ...props
 }: {
-  opp: Opp;
+  opp: Opponent;
   dismiss: () => void;
 } & ComponentProps<typeof Modal>) => {
   const pressAnim = useSharedValue<number>(0);

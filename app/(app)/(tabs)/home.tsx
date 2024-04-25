@@ -11,25 +11,21 @@ import { IconButton } from "components/IconButton";
 import { ActivityIndicator, Modal, StyleSheet } from "react-native";
 import { Button } from "components/Button";
 import Swiper from "react-native-deck-swiper";
-import { Opp, SwipeCard } from "components/SwipeCard";
+import { SwipeCard } from "components/SwipeCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getOpponents } from "utils/api";
 import OppModal from "components/oppModal";
 import { useRouter } from "expo-router";
 import { useUser } from "contexts/user.context";
 import { LogoMark } from "components/LogoMark";
+import { Opponent } from "constants/type";
 
 const Home = () => {
   const [opps, setOpps] = React.useState([]);
   const [filter, setFilter] = React.useState("all");
   // const [expanded, setExpanded] = React.useState<Opp | null>(null);
   const router = useRouter();
-  const { addOpponent } = useUser();
-
-  const { status, data, error } = useQuery({
-    queryKey: ["opponents", filter],
-    queryFn: getOpponents,
-  });
+  const { opponents, addOpponent } = useUser();
 
   const width = 256;
   const height = 256;
@@ -61,15 +57,15 @@ const Home = () => {
         </View>
       </View>
       <View flex style={{ top: -30, zIndex: 200 }}>
-        {status == "success" ? (
+        {opponents?.length ? (
           <Swiper
             disableBottomSwipe
             containerStyle={{
               padding: 0,
               margin: 0,
             }}
-            cards={status == "success" ? data?.slice(0, 10) : []}
-            renderCard={(card: Opp, i) => {
+            cards={opponents?.length ? opponents?.slice(0, 10) : []}
+            renderCard={(card: Opponent, i) => {
               return (
                 <SwipeCard
                   data={card}
@@ -93,12 +89,12 @@ const Home = () => {
               console.log(cardIndex, "onSwipedLeft");
             }}
             onSwipedRight={(cardIndex) => {
-              const opp = data[cardIndex];
-              if (opp.is_pro) {
+              const opp = opponents[cardIndex];
+              if (opp.swipedYou) {
                 addOpponent({
-                  _id: opp.account_id,
-                  profilePicture: opp.avatarfull,
-                  name: opp.name,
+                  _id: opp._id,
+                  images: opp.images,
+                  username: opp.username,
                 });
                 router.push(
                   `/match/${opp.account_id}?profileImage=${opp.avatarfull}&name=${opp.name}`

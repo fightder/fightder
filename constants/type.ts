@@ -90,26 +90,36 @@ export const createDiscordUserParser = z.object({
   expires_in: z.number(),
 });
 
-export const userParser = z.object({
+export const baseUserParser = z.object({
   _id: z.string(),
   username: z.string(),
-  images: z.array(z.string()),
+  images: z.array(z.object({ uri: z.string(), blurhash: z.string() })),
   //   age: z.number(),
-  birthdate: z.date(),
+  birthdate: z.string(),
   provider: z
     .array(z.enum(["google", "facebook", "apple", "email"]))
     .optional(),
 
   history: z.array(z.string()).optional(),
   fights: z.array(z.string()).optional(),
-  opponents: z.array(z.string()),
 
   activities: z.array(z.string()),
   interests: z.array(z.string()),
 
   locationHistory: z.array(z.string()),
 });
-
+export const userParser = baseUserParser.merge(
+  z.object({
+    opponents: z.array(z.string()),
+    righted: z.array(z.string()),
+    lefted: z.array(z.string()),
+  })
+);
+export const opponentParser = baseUserParser.merge(
+  z.object({
+    rightYou: z.boolean(),
+  })
+);
 export const chatParser = z.object({
   _id: z.string(),
   opponentId: z.string(),
@@ -144,6 +154,5 @@ const fightParser = z.object({
 
 export type Fight = z.infer<typeof fightParser>;
 export type User = z.infer<typeof userParser>;
-export type App = z.infer<typeof appParser>;
-export type AppUser = z.infer<typeof appUserParser>;
+export type Opponent = z.infer<typeof opponentParser>;
 export type Chat = z.infer<typeof chatParser>;

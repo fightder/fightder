@@ -3,48 +3,17 @@ import { View } from "./View";
 import { Text } from "./Text";
 import {
   FlatList,
-  Image,
-  ImageSourcePropType,
-  Modal,
   useWindowDimensions,
   StyleSheet,
   Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { User } from "constants/type";
+import { Opponent, User } from "constants/type";
 import TagList from "./TagList";
+import { Image } from "expo-image";
 
-export type Opp = {
-  // [x: string]: any;
-  _id: string;
-  canMatch: boolean;
-  tags: string[];
-  bio: string;
-  images: string[];
-  account_id: number;
-  steamid: string;
-  avatar: string;
-  avatarmedium: string;
-  avatarfull: string;
-  profileurl: string;
-  personaname: string;
-  last_login: string;
-  full_history_time: string;
-  cheese: string;
-  fh_unavailable: boolean;
-  loccountrycode: string;
-  name: string;
-  country_code: string;
-  fantasy_role: boolean;
-  team_id: number;
-  team_name: string;
-  team_tag: string;
-  is_locked: boolean;
-  is_pro: boolean;
-};
-
-export const SwipeCard = ({ data: opp, i }: { data: User; i: number }) => {
+export const SwipeCard = ({ data: opp, i }: { data: Opponent; i: number }) => {
   const [index, setIndex] = useState(0);
   const PAGE_WIDTH = useWindowDimensions().width;
   console.log(opp, "here?", opp.activities);
@@ -109,6 +78,14 @@ export const SwipeCard = ({ data: opp, i }: { data: User; i: number }) => {
               width: PAGE_WIDTH / opp.images.length - 25,
               marginHorizontal: 5,
 
+              shadowColor: "black",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 3.84,
+              elevation: 5,
               height: 3,
               backgroundColor: i === index ? "white" : "grey",
             }}
@@ -154,7 +131,8 @@ export const SwipeCard = ({ data: opp, i }: { data: User; i: number }) => {
               { width: PAGE_WIDTH },
             ]}
             key={index}
-            source={{ uri: opp.images[index] }}
+            source={{ uri: opp.images[index].uri }}
+            placeholder={{ uri: opp.images[index].blurhash }}
           />
         )}
 
@@ -194,14 +172,11 @@ export const SwipeCard = ({ data: opp, i }: { data: User; i: number }) => {
               index == 1 ? (
                 <Text color="white" variant="body">
                   {/* {opp.fantasy_role} */}
-                  {opp.country_code}
-                  {opp.team_name}
+                  {opp.birthdate}
                 </Text>
               ) : (
                 <Text variant="body" color="white">
-                  {opp.team_tag}
-                  {opp.team_name}
-                  {opp.team_id}
+                  {opp.birthdate}
                 </Text>
               )}
             </View>
