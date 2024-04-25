@@ -4,7 +4,7 @@ export default () => {
       name: process.env.APP_ENV === "production" ? "susu" : "susu (DEV)",
       slug: "susu",
       scheme: "susu",
-      version: "1.0.0",
+      version: "1.0.1",
       orientation: "portrait",
       icon: "./assets/icon.png",
       userInterfaceStyle: "automatic",
@@ -16,6 +16,12 @@ export default () => {
       experiments: {
         tsconfigPaths: true,
         typedRoutes: true,
+      },
+      updates: {
+        url: "https://u.expo.dev/${fef1f6e4-33ee-4706-b188-609a91bac569}",
+      },
+      runtimeVersion: {
+        policy: "sdkVersion",
       },
       assetBundlePatterns: ["**/*"],
       ios: {
