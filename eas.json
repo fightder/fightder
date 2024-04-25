@@ -22,13 +22,19 @@
 
       "distribution": "internal",
       "env": {
-        "APP_ENV": "development"
+        "APP_ENV": "development",
+        "EXPO_PUBLIC_API_URL": "localhost:8000",
+        "EXPO_PUBLIC_B2_KEY_ID": "0058f98d43dc9e80000000007",
+        "EXPO_PUBLIC_B2_ACCESS_KEY": "K005hP+UwkD/F+wPROUg19dWxD0tWl0"
       }
     },
     "production": {
       "channel": "production",
       "env": {
-        "APP_ENV": "production"
+        "APP_ENV": "production",
+        "EXPO_PUBLIC_API_URL": "https://api.fightder.com",
+        "EXPO_PUBLIC_B2_KEY_ID": "0058f98d43dc9e80000000007",
+        "EXPO_PUBLIC_B2_ACCESS_KEY": "K005hP+UwkD/F+wPROUg19dWxD0tWl0"
       }
     }
   }

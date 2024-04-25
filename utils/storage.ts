@@ -48,12 +48,15 @@ export const initb2 = async () => {
   });
 
   const b2_upload_json = await b2_upload_response.json();
-  console.log(b2_upload_json, "b2_upload_json");
+  // console.log(b2_upload_json, "b2_upload_json");
 
   const b2_upload_url = b2_upload_json.uploadUrl;
   const b2_upload_auth_token = b2_upload_json.authorizationToken;
 
-  console.log([b2_upload_url, b2_upload_auth_token, b2_download_url]);
+  // console.log([b2_upload_url, b2_upload_auth_token, b2_download_url]);
+  // if ok, print ok
+  if (b2_upload_url && b2_upload_auth_token && b2_download_url)
+    console.log("B2 inited successfully");
   inited = true;
   storage.set("b2_upload_url", b2_upload_url);
   storage.set("b2_upload_auth_token", b2_upload_auth_token);
