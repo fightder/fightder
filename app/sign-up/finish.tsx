@@ -10,6 +10,7 @@ import { Image, KeyboardAvoidingView, LogBox } from "react-native";
 import { Input } from "components/Input";
 import { UploadFile, storage } from "utils/storage";
 import { ImageItem } from "./images";
+import { router } from "expo-router";
 // import {
 //   S3Client,
 //   CreateBucketCommand,
@@ -20,6 +21,8 @@ import { ImageItem } from "./images";
 export default function Finish() {
   const { signIn, isLoading, signUpWithEmail } = useSession();
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [canNext, setCanNext] = useState(false);
   const images: ImageItem[] = JSON.parse(storage.getString("images"));
   const email = storage.getString("email");
@@ -27,7 +30,13 @@ export default function Finish() {
   const activities = JSON.parse(storage.getString("activities"));
 
   useEffect(() => {
-    if (username && username.length > 3) {
+    if (
+      username &&
+      username.length > 3 &&
+      password &&
+      password.length > 8 &&
+      password === confirmPassword
+    ) {
       storage.set("username", username);
       setCanNext(true);
     }
@@ -36,6 +45,7 @@ export default function Finish() {
   const onNext = async () => {
     // check if date is valid
     console.log(username, images, email, birthdate, activities, "datanext");
+
     if (!canNext) {
       console.log("cant next");
       return;
@@ -53,9 +63,12 @@ export default function Finish() {
           blurhash: i.blurhash,
         })),
         username,
+        password,
       });
 
       console.log(res);
+
+      router.replace("/");
     } catch (e) {
       console.log(e);
     }
@@ -73,7 +86,7 @@ export default function Finish() {
           </View>
 
           <View m={30} gap={5}>
-            <Text variant="title">Please Enter your username</Text>
+            <Text variant="title">username</Text>
             <Input
               value={username}
               onChangeText={(t) => setUsername(t)}
@@ -85,18 +98,42 @@ export default function Finish() {
               variant="subtitle"
             />
             <Text variant="caption">Atleast 4 characters</Text>
+            <Text variant="title">password</Text>
+            <Input
+              value={password}
+              onChangeText={(t) => setPassword(t)}
+              placeholder="password"
+              autoCorrect={false}
+              autoCapitalize="none"
+              bg={3}
+              p={5}
+              variant="subtitle"
+            />
+            <Text variant="caption">Atleast 8 characters</Text>
+            <Text variant="title">confirm password</Text>
+            <Input
+              value={confirmPassword}
+              onChangeText={(t) => setConfirmPassword(t)}
+              placeholder="username"
+              autoCorrect={false}
+              autoCapitalize="none"
+              bg={3}
+              p={5}
+              variant="subtitle"
+            />
+            <Text variant="caption">Atleast 8 characters</Text>
           </View>
-        </View>
-        <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
-          <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
-            <Text variant="title">Next</Text>
-          </View>
-        </Button>
-        {/* <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
+          <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
+            <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
+              <Text variant="title">Next</Text>
+            </View>
+          </Button>
+          {/* <Button style={{ margin: 20 }} onPress={onNext} disabled={!canNext}>
           <View center variant={canNext ? "primary" : "muted"} p={10} r={100}>
             <Text variant="title">Next</Text>
           </View>
         </Button> */}
+        </View>
       </KeyboardAvoidingView>
       <SafeBottom />
     </View>

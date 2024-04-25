@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconButton } from "./IconButton";
 import { router } from "expo-router";
 import { Text } from "./Text";
+import { SvgXml } from "react-native-svg";
 
 export function SafeTop({
   back,
@@ -63,22 +64,38 @@ export function SafeTop({
         </Text>
       )}
       {logo && (
-        <Text
-          // style={{ top: insets.top, left: 60, overflow: "visible" }}
+        <SvgXml
           style={{
             position: "absolute",
             margin: "auto",
-            display: "flex",
+            // display: "flex",
             // alignItems: "center",
             // justifyContent: "center",
-            width: "100%",
+            // width: "100%",
             // backgroundColor: "red",
+            marginLeft: 10,
             textAlign: "center",
           }}
-          variant="header"
-        >
-          🔥Fightder
-        </Text>
+          xml={logomark}
+          // width={30}
+          // height={30}
+        />
+        // <Text
+        //   // style={{ top: insets.top, left: 60, overflow: "visible" }}
+        //   style={{
+        //     position: "absolute",
+        //     margin: "auto",
+        //     display: "flex",
+        //     // alignItems: "center",
+        //     // justifyContent: "center",
+        //     width: "100%",
+        //     // backgroundColor: "red",
+        //     textAlign: "center",
+        //   }}
+        //   variant="header"
+        // >
+        //   🔥Fightder
+        // </Text>
       )}
     </View>
   );

@@ -17,6 +17,7 @@ import { getOpponents } from "utils/api";
 import OppModal from "components/oppModal";
 import { useRouter } from "expo-router";
 import { useUser } from "contexts/user.context";
+import { LogoMark } from "components/LogoMark";
 
 const Home = () => {
   const [opps, setOpps] = React.useState([]);
@@ -53,9 +54,7 @@ const Home = () => {
           <Text variant="header" style={{ textAlign: "center" }}>
             🔥
           </Text>
-          <Text variant="header" style={{ textAlign: "center" }}>
-            Fightder
-          </Text>
+          <LogoMark />
 
           <IconButton name="notifications" />
           {/* <IconButton name="add" href="/add-friend" /> */}

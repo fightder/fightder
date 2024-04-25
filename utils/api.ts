@@ -2,9 +2,22 @@ import axios from "axios";
 
 export const signUp = async (data) => {};
 
+export const getProfile = async ({ queryKey }) => {
+  if (queryKey[1] == "me") {
+    const res = await axios.get(process.env.EXPO_PUBLIC_API_URL + "/me");
+    return res.data;
+  } else if (queryKey[1]) {
+    const res = await axios.get(
+      process.env.EXPO_PUBLIC_API_URL + "/profile/" + queryKey[1]
+    );
+    console.log(res.data);
+    return res.data;
+  }
+};
+
 export const getOpponents = async ({ queryKey }) => {
   if (queryKey[1] == "all") {
-    const res = await axios.get("https://api.fightder.com");
+    const res = await axios.get(process.env.EXPO_PUBLIC_API_URL + "/opponents");
     return res.data;
   } else if (queryKey[1]) {
     const res = await axios.get(

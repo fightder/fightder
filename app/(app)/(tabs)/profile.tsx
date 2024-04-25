@@ -25,7 +25,7 @@ const App = () => {
   const r = width * 0.33;
 
   const isValid = useSharedValue(false);
-  console.log(user);
+  console.log(user, "user");
 
   return (
     <View bg={1} flex>
@@ -49,7 +49,7 @@ const App = () => {
       >
         {/* <IconButton name="menu" /> */}
         <Text variant="header" style={{ textAlign: "center" }}>
-          {user?.name}
+          {user?.username}
         </Text>
 
         <View row gap={30}>

@@ -12,11 +12,11 @@ import * as Crypto from "expo-crypto";
 import { hashPassword, verifyPassword } from "utils/hash";
 import { router } from "expo-router";
 // or init by app ID
-export const dataAPI = createMongoDBDataAPI({
-  apiKey: process.env.EXPO_PUBLIC_MONGO_API_KEY,
-  urlEndpoint: process.env.EXPO_PUBLIC_URL_ENDPOINT,
-  // appId: process.env.EXPO_PUBLIC_MONGO_APP_ID,
-});
+// export const dataAPI = createMongoDBDataAPI({
+//   apiKey: process.env.EXPO_PUBLIC_MONGO_API_KEY,
+//   urlEndpoint: process.env.EXPO_PUBLIC_URL_ENDPOINT,
+//   // appId: process.env.EXPO_PUBLIC_MONGO_APP_ID,
+// });
 // (async () => {
 //   const password = await hashPassword("password", "man");
 //   // Store hash in your password DB.
@@ -140,39 +140,19 @@ export function SessionProvider(props: React.PropsWithChildren) {
     storage.clearAll();
     setSession(null);
   };
+
   const signInWithEmail = async (email: string, password: string) => {
     try {
-      const res = await dataAPI.find({
-        dataSource: "dev",
-        database: "fightder_dev",
-        collection: "users",
-        filter: {
-          $or: [{ email }, { username: email }],
-        },
-      });
-
-      const users = res.documents;
-
-      console.log(users);
-      const foundUser = users.find((user) => {
-        console.log(user, "user");
-        if (verifyPassword(password, user.password)) {
-          console.log("password correct", user);
-          return true; // Stops iteration when correct password is found
-        } else {
-          console.log("password incorrect");
-          return false;
+      const res = await axios.post(
+        process.env.EXPO_PUBLIC_API_URL + "/sign-up",
+        {
+          email,
+          password,
         }
-      });
+      );
+      setSession(res.data);
 
-      if (foundUser) {
-        setSession(foundUser._id);
-        return foundUser;
-      } else {
-        return null;
-        // Handle case when password is not found
-      }
-      return null;
+      return res.data;
     } catch (e) {
       console.log(e);
       return null;
@@ -205,39 +185,24 @@ export function SessionProvider(props: React.PropsWithChildren) {
           password: string;
         }) => {
           // check if user exists by email or username
-          const res = await dataAPI.find({
-            dataSource: "dev",
-            database: "fightder_dev",
-            collection: "users",
-            filter: {
-              $or: [{ email }, { username: email }],
-            },
-          });
-
-          const users = res.documents;
-
-          console.log(users);
-          if (users.length > 0) {
-            console.log("user exists");
-            return;
-          } else {
-            const newUser = await dataAPI.insertOne({
-              dataSource: "dev",
-              database: "fightder_dev",
-              collection: "users",
-              document: {
+          try {
+            const res = await axios.post(
+              process.env.EXPO_PUBLIC_API_URL + "/sign-up",
+              {
                 email,
                 birthdate,
                 activities,
                 images,
                 username,
-                password: await hashPassword(password, username),
-              },
-            });
-            console.log(newUser.insertedId, "insertedId");
-            setSession(newUser.insertedId);
+                password,
+              }
+            );
 
-            return newUser.insertedId;
+            setSession(res.data);
+            return res.data;
+          } catch (e) {
+            console.log(e);
+            return "error signing up";
           }
         },
         getFyncUserById: async (id: string) => {

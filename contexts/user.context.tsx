@@ -8,6 +8,10 @@ import { storage } from "utils/storage";
 import { getCurrentUserFromFync } from "utils/fync";
 import { Fight } from "utils/type";
 import Chats from "app/(app)/(tabs)/chats";
+import { useSession } from "./auth.context";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { getProfile } from "utils/api";
 
 const UserContext = React.createContext<{
   user: User;
@@ -42,6 +46,7 @@ export function useUser() {
 }
 
 export function UserProvider(props: React.PropsWithChildren) {
+  const { signIn, isLoading, session, signInWithEmail } = useSession();
   const [user, setUser] = useState<User>();
   const [fights, setFights] = useState<Fight[]>([]);
   const [chats, setChats] = useState<Chat[]>([
@@ -63,9 +68,24 @@ export function UserProvider(props: React.PropsWithChildren) {
     },
   ]);
   const [notifications, setNotifications] = useState<string[]>([]);
+  const {
+    status,
+    data,
+    error: getProfileError,
+  } = useQuery({
+    queryKey: ["profile", "me"],
+    queryFn: getProfile,
+  });
 
   const [error, setError] = useState<string>();
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    console.log(session, "ZESTY");
+    if (!user) {
+      const res = axios.get(endpoints.user);
+    }
+  }, []);
 
   const createFight = (fight: Fight) => {
     console.log(fight, "fight");
@@ -81,8 +101,8 @@ export function UserProvider(props: React.PropsWithChildren) {
         opponentImage: opponent?.opponentImage,
         opponentName: opponent?.opponentName,
         inviterId: user._id,
-        inviterImage: user.profilePicture,
-        inviterName: user.name,
+        inviterImage: user.images[0].uri,
+        inviterName: user.username,
         matchAt: new Date().toISOString(),
       },
     ]);

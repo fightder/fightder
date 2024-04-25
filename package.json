@@ -1,5 +1,5 @@
 {
-  "name": "fightder",
+  "name": "susu",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -49,6 +49,7 @@
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
+    "expo-updates": "~0.24.12",
     "expo-web-browser": "~12.8.2",
     "mongodb-data-api": "^0.4.0",
     "moti": "^0.27.2",

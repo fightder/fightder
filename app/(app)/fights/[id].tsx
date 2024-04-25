@@ -17,10 +17,10 @@ const Fight = () => {
   useEffect(() => {
     console.log(fights.length, "fights");
   }, [fights]);
-  // const { status, data, error } = useQuery({
-  //   queryKey: ["fight", id],
-  //   queryFn: getFights,
-  // });
+  const { status, data, error } = useQuery({
+    queryKey: ["fight", id],
+    queryFn: getFights,
+  });
 
   // if (status != "success") {
   //   return (

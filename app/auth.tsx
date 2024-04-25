@@ -33,18 +33,18 @@ export default function SignIn() {
       style={{ alignItems: "center", justifyContent: "flex-end" }}
     >
       <SafeTop />
-      <Text variant="header" style={{ textAlign: "center" }}>
-        🔥Fightder
-      </Text>
-      {/* <Image
+      <SafeTop />
+      <SafeTop />
+      <Image
         width={100}
         height={100}
         style={{
-          width: 100,
-          height: 100,
+          width: 200,
+          height: 200,
         }}
-        source={require("assets/icon.png")}
-      /> */}
+        source={require("assets/adaptive-icon.png")}
+      />
+      <Text variant="title">Grow with your Game</Text>
 
       <View
         flex
