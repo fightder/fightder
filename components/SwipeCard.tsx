@@ -112,6 +112,7 @@ export const SwipeCard = ({ data: opp, i }: { data: Opponent; i: number }) => {
           style={{
             flex: 1,
             width: "100%",
+            position: "absolute",
             height: "100%",
             opacity: 0.8,
             borderRadius: 20,
@@ -143,7 +144,9 @@ export const SwipeCard = ({ data: opp, i }: { data: Opponent; i: number }) => {
             left: 0,
             zIndex: 20,
             // width: "100%",
-            justifyContent: "center",
+            // justifyContent: "center",
+            justifyContent: "flex-end",
+            alignItems: "center",
           }}
           // onPress={expand}
         >
@@ -162,7 +165,24 @@ export const SwipeCard = ({ data: opp, i }: { data: Opponent; i: number }) => {
                 )}
               </Text>
               {index == 0 ? (
-                <TagList tags={opp.activities} />
+                <View
+                  style={{
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    flex: 1,
+                    width: "100%",
+                    // justifyContent: "flex-start",
+                    // alignItems: "flex-start",
+                  }}
+                >
+                  {opp.activities.map((tag, index) => {
+                    return (
+                      <View r={50} m={5} p={8} variant="secondary" key={index}>
+                        <Text key={index}>{tag}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
               ) : // <Text color="white" variant="body">
               //   {Math.floor(
               //     (Number(new Date()) - Number(new Date(2000, 1, 1))) /

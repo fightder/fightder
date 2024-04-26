@@ -8,13 +8,15 @@ const TagList = ({ tags }: { tags: string[] }) => {
       style={{
         flexWrap: "wrap",
         flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
+        flex: 1,
+        width: "100%",
+        // justifyContent: "flex-start",
+        // alignItems: "flex-start",
       }}
     >
       {tags?.map((tag, index) => {
         return (
-          <View r={50} m={5} p={10} variant="secondary" key={index}>
+          <View r={50} m={5} p={8} variant="secondary" key={index}>
             <Text key={index}>{tag}</Text>
           </View>
         );

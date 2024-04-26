@@ -47,7 +47,7 @@ export default function BirthDate() {
     const age = now.getFullYear() - date.getFullYear();
     console.log(age);
 
-    if (age < 18) {
+    if (age > 18) {
       // check if user is over 18
       storage.set("birthdate", date.toDateString());
 

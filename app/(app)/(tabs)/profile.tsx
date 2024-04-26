@@ -2,7 +2,7 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Canvas, Circle, Group } from "@shopify/react-native-skia";
 import { useUser } from "contexts/user.context";
-import { Button, Image, Pressable } from "react-native";
+import { Button, FlatList, Image, Pressable } from "react-native";
 import { dataAPI, useSession } from "contexts/auth.context";
 import { Text } from "components/Text";
 import { SafeTop } from "components/SafeTop";
@@ -16,6 +16,7 @@ import { useSharedValue, useDerivedValue } from "react-native-reanimated";
 import { MotiView, ScrollView } from "moti";
 import { JsonViewer } from "components/JsonViewer";
 import { ProfileImage } from "components/ProfileImage";
+import TagList from "components/TagList";
 const App = () => {
   const { user, chats } = useUser();
   // const { signOut } = useSession();
@@ -47,6 +48,10 @@ const App = () => {
           backgroundColor: "transparent",
         }}
       >
+        <Image
+          source={require("assets/adaptive-icon.png")}
+          style={{ width: 60, height: 60 }}
+        />
         {/* <IconButton name="menu" /> */}
         <Text variant="header" style={{ textAlign: "center" }}>
           {user?.username}
@@ -54,19 +59,36 @@ const App = () => {
 
         <View row gap={30}>
           <IconButton href="/settings" name="settings-sharp" />
-          <IconButton name="pencil" href="/edit-profile" />
+          {/* <IconButton name="pencil" href="/edit-profile" /> */}
         </View>
       </View>
       <ScrollView style={{ flex: 1 }}>
         <View style={{ padding: 10, marginLeft: 10, marginRight: 10 }}>
-          <ProfileImage
-            source={{ uri: user?.profilePicture }}
+          <FlatList
+            data={user.images}
+            horizontal
+            renderItem={({ item, index }) => {
+              return (
+                <Image
+                  source={{ uri: item.uri }}
+                  style={{
+                    width: 200,
+                    height: 340,
+                    margin: 5,
+                  }}
+                />
+              );
+            }}
+          />
+          {/* <ProfileImage
+            source={{ uri: user?.images[0].uri }}
             size={100}
             radius={35}
-          />
-          <Text>{user?.name}</Text>
-          {user?.bio && <Text fontSize="md"> {user?.bio}</Text>}
-          <Text fontSize="xl">Matches: {chats.length}</Text>
+          /> */}
+          <TagList tags={user?.activities} />
+          {/* <Text>{user?.name}</Text> */}
+          {/* {user?.bio && <Text fontSize="md"> {user?.bio}</Text>} */}
+          {/* <Text fontSize="xl">Matches: {chats.length}</Text> */}
           {/* <Canvas style={{ width, height }}>
           <Group blendMode="exclusion">
             <Circle cx={r} cy={r} r={r} color="cyan" />

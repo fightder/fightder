@@ -22,10 +22,12 @@ const UserContext = React.createContext<{
   createFight: (fight: Fight) => void;
   cancelFight: (fight: Fight) => void;
   addOpponent: (opp: User) => void;
+  refetchOpponents: () => void;
   notifications: string[];
 }>({
   user: {},
   opponents: [],
+  refetchOpponents: () => {},
   fights: [],
   createFight: () => {},
   cancelFight: () => {},
@@ -75,6 +77,7 @@ export function UserProvider(props: React.PropsWithChildren) {
     status: userStatus,
     data: user,
     error: userError,
+    refetch: refetchUser,
   } = useQuery({
     queryKey: ["profile", "me"],
     queryFn: getProfile(session),
@@ -84,6 +87,7 @@ export function UserProvider(props: React.PropsWithChildren) {
     status: opponentsStatus,
     data: opponents,
     error: opponentsError,
+    refetch: refetchOpponents,
   } = useQuery({
     queryKey: ["opponents", opponentsFilter],
     queryFn: getOpponents(session),
@@ -221,6 +225,7 @@ export function UserProvider(props: React.PropsWithChildren) {
         fights,
         createFight,
         cancelFight,
+        refetchOpponents,
         notifications,
 
         addOpponent,

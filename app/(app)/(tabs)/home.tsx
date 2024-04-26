@@ -25,7 +25,7 @@ const Home = () => {
   const [filter, setFilter] = React.useState("all");
   // const [expanded, setExpanded] = React.useState<Opp | null>(null);
   const router = useRouter();
-  const { opponents, addOpponent } = useUser();
+  const { opponents, addOpponent, refetchOpponents } = useUser();
 
   const width = 256;
   const height = 256;
@@ -90,14 +90,14 @@ const Home = () => {
             }}
             onSwipedRight={(cardIndex) => {
               const opp = opponents[cardIndex];
-              if (opp.swipedYou) {
+              if (opp.rightYou) {
                 addOpponent({
                   _id: opp._id,
                   images: opp.images,
                   username: opp.username,
                 });
                 router.push(
-                  `/match/${opp.account_id}?profileImage=${opp.avatarfull}&name=${opp.name}`
+                  `/match/${opp._id}?profileImage=${opp.images[0]}&name=${opp.username}`
                 );
               }
               console.log(cardIndex, "onSwipedRight");
@@ -167,6 +167,11 @@ const Home = () => {
             <ActivityIndicator />
           </View>
         )}
+        <View flex center>
+          <IconButton name="refresh" size={40} onPress={refetchOpponents} />
+          <Text variant="subtitle"> U ran out of matches, hehe</Text>
+          <Text>invite more friends so you can discover more people</Text>
+        </View>
       </View>
       <SafeBottom />
     </View>

@@ -14,6 +14,7 @@ import * as FileSystem from "expo-file-system";
 import { fileURLtoBlob } from "app/sign-up/finish";
 import AWS from "aws-sdk";
 import * as ImagePicker from "expo-image-picker";
+
 AWS.config.update({
   region: "us-east-005",
   credentials: {

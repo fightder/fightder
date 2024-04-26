@@ -34,7 +34,7 @@ export default function Finish() {
       username &&
       username.length > 3 &&
       password &&
-      password.length > 8 &&
+      password.length >= 8 &&
       password === confirmPassword
     ) {
       storage.set("username", username);
