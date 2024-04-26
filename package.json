@@ -55,7 +55,6 @@
     "moti": "^0.27.2",
     "react": "^18.2.0",
     "react-native": "0.73.4",
-    "react-native-blob-jsi-helper": "^0.3.1",
     "react-native-blurhash": "^2.0.2",
     "react-native-deck-swiper": "^2.0.16",
     "react-native-dropdown-picker": "^5.4.6",

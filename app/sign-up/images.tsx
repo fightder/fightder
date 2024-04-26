@@ -11,7 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 
 import { IconButton } from "components/IconButton";
-import { UploadFile, storage } from "utils/storage";
+import { storage } from "utils/storage";
 import { uploadToS3 } from "utils/s3";
 import { JsonViewer } from "components/JsonViewer";
 import * as Burnt from "burnt";

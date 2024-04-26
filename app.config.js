@@ -29,6 +29,29 @@ export default () => {
         associatedDomains: ["applinks:susu.team", "webcredentials:susu.team"],
         bundleIdentifier:
           process.env.APP_ENV === "production" ? "team.susu" : "team.susu-dev",
+        privacyManifests: {
+          NSPrivacyAccessedAPITypes: [
+            {
+              NSPrivacyAccessedAPIType:
+                "NSPrivacyAccessedAPICategoryUserDefaults",
+              NSPrivacyAccessedAPITypeReasons: ["3B52.1"],
+            },
+            {
+              NSPrivacyAccessedAPIType: "NSPrivacyAccessedAPICategoryDiskSpace",
+              NSPrivacyAccessedAPITypeReasons: ["85F4.1"],
+            },
+            {
+              NSPrivacyAccessedAPIType:
+                "NSPrivacyAccessedAPICategorySystemBootTime",
+              NSPrivacyAccessedAPITypeReasons: ["85F4.1"],
+            },
+            {
+              NSPrivacyAccessedAPIType:
+                "NSPrivacyAccessedAPICategoryUserDefaults",
+              NSPrivacyAccessedAPITypeReasons: ["1C8F.1"],
+            },
+          ],
+        },
       },
       android: {
         adaptiveIcon: {
@@ -73,8 +96,13 @@ export default () => {
         [
           "expo-build-properties",
           {
+            android: {
+              compileSdkVersion: 31,
+              targetSdkVersion: 31,
+              buildToolsVersion: "31.0.0",
+            },
             ios: {
-              deploymentTarget: "13.4",
+              deploymentTarget: "14.0",
             },
           },
         ],

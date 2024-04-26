@@ -8,7 +8,7 @@ import { Button } from "components/Button";
 import { SafeBottom, SafeTop } from "components/SafeTop";
 import { Image, KeyboardAvoidingView, LogBox } from "react-native";
 import { Input } from "components/Input";
-import { UploadFile, storage } from "utils/storage";
+import { storage } from "utils/storage";
 import { ImageItem } from "./images";
 import { router } from "expo-router";
 // import {

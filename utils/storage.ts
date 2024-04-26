@@ -1,8 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { MMKV } from "react-native-mmkv";
 import { encode } from "base-64";
-import * as Crypto from "expo-crypto";
-import { getArrayBufferForBlob } from "react-native-blob-jsi-helper";
 
 export const storage = new MMKV();
 let inited = false;
@@ -94,46 +92,46 @@ const getCredentials = async () => {
     b2_download_url: down,
   };
 };
-export const UploadFile = async (file: Blob, name?: string, type?: string) => {
-  const { b2_upload_url, b2_upload_auth_token, b2_download_url } =
-    await initb2();
-  // await getCredentials();
-  const ab = getArrayBufferForBlob(file);
+// export const UploadFile = async (file: Blob, name?: string, type?: string) => {
+//   const { b2_upload_url, b2_upload_auth_token, b2_download_url } =
+//     await initb2();
+//   // await getCredentials();
+//   const ab = getArrayBufferForBlob(file);
 
-  const shaab = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA1, ab);
-  const sha1 = [...new Uint8Array(shaab)]
-    .map((x) => x.toString(16).padStart(2, "0"))
-    .join("");
-  const extension = type.split("/")[1];
+//   const shaab = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA1, ab);
+//   const sha1 = [...new Uint8Array(shaab)]
+//     .map((x) => x.toString(16).padStart(2, "0"))
+//     .join("");
+//   const extension = type.split("/")[1];
 
-  console.log(sha1, "sha1");
+//   console.log(sha1, "sha1");
 
-  const b2_upload_headers = new Headers();
-  b2_upload_headers.append("Authorization", b2_upload_auth_token);
-  b2_upload_headers.append(
-    "X-Bz-File-Name",
-    encodeURIComponent(name + Date.now() + "." + extension)
-  );
+//   const b2_upload_headers = new Headers();
+//   b2_upload_headers.append("Authorization", b2_upload_auth_token);
+//   b2_upload_headers.append(
+//     "X-Bz-File-Name",
+//     encodeURIComponent(name + Date.now() + "." + extension)
+//   );
 
-  b2_upload_headers.append("X-Bz-Content-Sha1", sha1);
-  b2_upload_headers.append("Content-Type", type);
-  b2_upload_headers.append("Content-Length", file.size.toString());
+//   b2_upload_headers.append("X-Bz-Content-Sha1", sha1);
+//   b2_upload_headers.append("Content-Type", type);
+//   b2_upload_headers.append("Content-Length", file.size.toString());
 
-  const b2_upload_response = await fetch(b2_upload_url, {
-    method: "POST",
-    headers: b2_upload_headers,
-    body: file,
-  });
+//   const b2_upload_response = await fetch(b2_upload_url, {
+//     method: "POST",
+//     headers: b2_upload_headers,
+//     body: file,
+//   });
 
-  const b2_upload_json = await b2_upload_response.json();
+//   const b2_upload_json = await b2_upload_response.json();
 
-  console.log(b2_upload_json, "upload res");
-  const url =
-    b2_download_url +
-    "/file/" +
-    encodeURIComponent("fightder" + "/" + b2_upload_json.fileName);
+//   console.log(b2_upload_json, "upload res");
+//   const url =
+//     b2_download_url +
+//     "/file/" +
+//     encodeURIComponent("fightder" + "/" + b2_upload_json.fileName);
 
-  console.log(url, "urll");
+//   console.log(url, "urll");
 
-  return url;
-};
+//   return url;
+// };
